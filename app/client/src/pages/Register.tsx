@@ -1,16 +1,40 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 import styles from './Auth.module.css';
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulating registration
-    navigate('/login');
+    setError('');
+    setSuccess('');
+    setLoading(true);
+
+    try {
+      const response = await api.post('/api/auth/register', { email, password });
+      
+      if (response.data.requiresVerification) {
+        setSuccess('Registration successful! Please check your email to verify your account before logging in.');
+        
+        // Redirect to login after 3 seconds
+        setTimeout(() => {
+          navigate('/login', { 
+            state: { message: 'Please verify your email before logging in. Check your inbox for the verification link.' }
+          });
+        }, 3000);
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -20,6 +44,19 @@ const Register: React.FC = () => {
           <h1>MJ Solutionss</h1>
           <p>Create your finance account</p>
         </div>
+
+        {error && (
+          <div className={styles.errorMessage}>
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className={styles.successMessage}>
+            {success}
+          </div>
+        )}
+
         <div className={styles.inputGroup}>
           <label>Email Address</label>
           <input 
@@ -27,6 +64,7 @@ const Register: React.FC = () => {
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             required 
+            disabled={loading}
           />
         </div>
         <div className={styles.inputGroup}>
@@ -36,9 +74,14 @@ const Register: React.FC = () => {
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
             required 
+            minLength={6}
+            disabled={loading}
           />
+          <small>Minimum 6 characters</small>
         </div>
-        <button type="submit" className={styles.authBtn}>Register</button>
+        <button type="submit" className={styles.authBtn} disabled={loading}>
+          {loading ? 'Creating Account...' : 'Register'}
+        </button>
         <p className={styles.authFooter}>
           Already have an account? <span onClick={() => navigate('/login')}>Login</span>
         </p>

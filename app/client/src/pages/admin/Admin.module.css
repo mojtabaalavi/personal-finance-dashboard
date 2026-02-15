@@ -31,10 +31,16 @@
   border: 1px solid #e2e8f0;
 }
 
+[data-theme="dark"] .searchBox {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
 .searchBox input {
   border: none;
   outline: none;
   font-size: 0.875rem;
+  background: transparent;
+  color: var(--text-primary);
 }
 
 .tableCard {
@@ -59,10 +65,19 @@
   color: var(--text-secondary);
 }
 
+[data-theme="dark"] .table th {
+  background: rgba(255, 255, 255, 0.03);
+}
+
 .table td {
   padding: 16px 24px;
   border-bottom: 1px solid #edf2f7;
   font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .table td {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
 .userCell {
@@ -99,6 +114,11 @@
   padding: 4px 8px;
   border-radius: 4px;
   background: #e2e8f0;
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .roleBadge {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .roleBadge.admin {
@@ -132,6 +152,10 @@
 .actionBtn:hover {
   background: #f1f5f9;
   color: var(--primary-color);
+}
+
+[data-theme="dark"] .actionBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* Parser Management Grid */
@@ -174,6 +198,10 @@
   overflow-y: auto;
 }
 
+[data-theme="dark"] .rulesPreview {
+  background: rgba(255, 255, 255, 0.03);
+}
+
 .rulesPreview pre { font-family: monospace; font-size: 0.75rem; }
 
 .cardActions {
@@ -182,6 +210,10 @@
   gap: 12px;
   padding-top: 16px;
   border-top: 1px solid #edf2f7;
+}
+
+[data-theme="dark"] .cardActions {
+  border-top-color: rgba(255, 255, 255, 0.1);
 }
 
 .editBtn, .deleteBtn {
@@ -196,6 +228,10 @@
 }
 
 .editBtn { background: #f1f5f9; color: var(--text-primary); }
+
+[data-theme="dark"] .editBtn {
+  background: rgba(255, 255, 255, 0.05);
+}
 .deleteBtn { background: #fee2e2; color: #991b1b; }
 
 .addBtn {

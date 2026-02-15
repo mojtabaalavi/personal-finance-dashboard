@@ -104,6 +104,10 @@
   flex-shrink: 0;
 }
 
+[data-theme="dark"] .avatar {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
 .user .avatar {
   background-color: var(--primary-light);
   color: var(--white);
@@ -112,6 +116,12 @@
 .assistant .bubble {
   background-color: #f7fafc;
   border: 1px solid #edf2f7;
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .assistant .bubble {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .user .bubble {
@@ -133,12 +143,22 @@
   gap: 12px;
 }
 
+[data-theme="dark"] .chatInput {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
 .chatInput input {
   flex: 1;
   padding: 14px 20px;
   border: 1px solid #e2e8f0;
   border-radius: 100px;
   font-size: 0.9375rem;
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .chatInput input {
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .chatInput input:focus {

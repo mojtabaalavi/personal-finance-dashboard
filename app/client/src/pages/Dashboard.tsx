@@ -19,7 +19,7 @@ const KpiCard = ({ title, value, icon, color, trend }: any) => (
   <div className={styles.kpiCard}>
     <div className={styles.kpiInfo}>
       <span className={styles.kpiTitle}>{title}</span>
-      <h3 className={styles.kpiValue}>${value.toLocaleString()}</h3>
+      <h3 className={`${styles.kpiValue} sensitive`}>${value.toLocaleString()}</h3>
       {trend && (
         <span className={`${styles.kpiTrend} ${trend > 0 ? styles.pos : styles.neg}`}>
           {trend > 0 ? '+' : ''}{trend}% from last month

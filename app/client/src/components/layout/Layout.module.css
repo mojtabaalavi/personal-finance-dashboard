@@ -129,7 +129,7 @@
 .header {
   height: 64px;
   background-color: var(--card-bg);
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -137,11 +137,22 @@
   position: sticky;
   top: 0;
   z-index: 10;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+[data-theme="dark"] .header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
 .header h2 {
   font-size: 1.125rem;
   font-weight: 600;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .content {
@@ -150,10 +161,30 @@
 }
 
 .privacyToggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 0.75rem;
   font-weight: 600;
   padding: 6px 12px;
-  background-color: #f7fafc;
-  border: 1px solid #e2e8f0;
+  background-color: var(--card-bg);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .privacyToggle {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.privacyToggle:hover {
+  background-color: var(--primary-color);
+  color: var(--white);
+  border-color: var(--primary-color);
+}
+
+[data-privacy="on"] .privacyToggle {
+  background-color: var(--success);
+  color: var(--white);
+  border-color: var(--success);
 }

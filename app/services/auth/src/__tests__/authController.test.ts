@@ -31,18 +31,23 @@ describe('Auth Controller', () => {
         role: 'USER',
         isLocked: false,
         permissions: [],
+        emailVerified: false,
+        emailVerificationToken: 'token123',
+        emailVerificationExpiry: new Date(),
+        twoFactorEnabled: true,
+        twoFactorCode: null,
+        twoFactorCodeExpiry: null,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
-
-      vi.spyOn(jwtUtils, 'generateToken').mockReturnValue('fake-token');
 
       await register(mockRequest as Request, mockResponse as Response);
 
       expect(mockResponse.status).toHaveBeenCalledWith(201);
       expect(mockResponse.json).toHaveBeenCalledWith({
-        token: 'fake-token',
-        user: { id: '1', email: userData.email, role: 'USER' },
+        message: 'Registration successful. Please check your email to verify your account.',
+        email: userData.email,
+        requiresVerification: true,
       });
     });
 
@@ -58,7 +63,7 @@ describe('Auth Controller', () => {
   });
 
   describe('login', () => {
-    it('should login successfully', async () => {
+    it('should send 2FA code successfully', async () => {
       const loginData = { email: 'login@example.com', password: 'password123' };
       mockRequest.body = loginData;
 
@@ -67,17 +72,20 @@ describe('Auth Controller', () => {
         email: loginData.email,
         passwordHash: 'hashed',
         role: 'USER',
+        emailVerified: true,
+        isLocked: false,
       };
       prismaMock.user.findFirst.mockResolvedValue(user as any);
+      prismaMock.user.update.mockResolvedValue(user as any);
       
       vi.spyOn(argon2, 'verify').mockResolvedValue(true);
-      vi.spyOn(jwtUtils, 'generateToken').mockReturnValue('fake-token');
 
       await login(mockRequest as Request, mockResponse as Response);
 
       expect(mockResponse.json).toHaveBeenCalledWith({
-        token: 'fake-token',
-        user: { id: '1', email: loginData.email, role: 'USER' },
+        message: 'Verification code sent to your email',
+        requires2FA: true,
+        email: loginData.email,
       });
     });
 

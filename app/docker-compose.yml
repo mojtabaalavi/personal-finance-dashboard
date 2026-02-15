@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # --- Core Infrastructure ---
@@ -16,7 +16,7 @@ services:
 
   # --- Backend Services ---
   gateway:
-    build: 
+    build:
       context: ./gateway
       dockerfile: Dockerfile
     container_name: pfd_gateway
@@ -44,10 +44,16 @@ services:
       - "4001:4001"
     depends_on:
       - db
+      - mailhog
     environment:
       - DATABASE_URL=postgresql://admin:password123@db:5432/pfd_db?schema=public
       - JWT_SECRET=supersecretkey
       - PORT=4001
+      - SMTP_HOST=mailhog
+      - SMTP_PORT=1025
+      - SMTP_SECURE=false
+      - EMAIL_FROM=noreply@personalfinance.local
+      - APP_URL=http://localhost:3000
 
   finance-service:
     build:
@@ -128,7 +134,15 @@ services:
       - "3000:80"
     depends_on:
       - gateway
-      
+
+  # --- Email Testing (MailHog) ---
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: pfd_mailhog
+    ports:
+      - "1025:1025" # SMTP server
+      - "8025:8025" # Web UI
+
 volumes:
   postgres_data:
   ollama_data:

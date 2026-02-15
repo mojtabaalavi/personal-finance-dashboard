@@ -1,13 +1,42 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ReceiptText, Home, BrainCircuit, LogOut, User, ShieldCheck, Users, Settings } from 'lucide-react';
+import { LayoutDashboard, ReceiptText, Home, BrainCircuit, LogOut, User, ShieldCheck, Users, Settings, Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import styles from './Layout.module.css';
 
 const Layout: React.FC = () => {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
+  const [privacyMode, setPrivacyMode] = useState<boolean>(false);
+
+  // Load privacy mode from localStorage on mount
+  useEffect(() => {
+    const savedPrivacy = localStorage.getItem('privacyMode');
+    if (savedPrivacy !== null) {
+      const isPrivacyOn = savedPrivacy === 'true';
+      setPrivacyMode(isPrivacyOn);
+      // Apply to document
+      if (isPrivacyOn) {
+        document.documentElement.setAttribute('data-privacy', 'on');
+      }
+    }
+  }, []);
+
+  // Toggle privacy mode
+  const togglePrivacy = () => {
+    const newPrivacyMode = !privacyMode;
+    setPrivacyMode(newPrivacyMode);
+    localStorage.setItem('privacyMode', String(newPrivacyMode));
+    
+    // Apply privacy mode to document
+    if (newPrivacyMode) {
+      document.documentElement.setAttribute('data-privacy', 'on');
+    } else {
+      document.documentElement.removeAttribute('data-privacy');
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -87,7 +116,15 @@ const Layout: React.FC = () => {
         <header className={styles.header}>
           <h2>{navItems.find(i => i.path === location.pathname)?.label || 'Dashboard'}</h2>
           <div className={styles.headerActions}>
-            <button className={styles.privacyToggle}>Privacy: OFF</button>
+            <ThemeToggle />
+            <button 
+              className={styles.privacyToggle} 
+              onClick={togglePrivacy}
+              title={privacyMode ? 'Disable privacy mode' : 'Enable privacy mode'}
+            >
+              {privacyMode ? <EyeOff size={16} /> : <Eye size={16} />}
+              <span>Privacy: {privacyMode ? 'ON' : 'OFF'}</span>
+            </button>
           </div>
         </header>
         <section className={styles.content}>

@@ -16,6 +16,12 @@
   border-radius: var(--radius-lg);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+[data-theme="dark"] .authCard {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
 .authHeader {
@@ -33,6 +39,39 @@
 .authHeader p {
   color: var(--text-secondary);
   font-size: 0.875rem;
+}
+
+.errorMessage {
+  padding: 12px;
+  background-color: #fee;
+  border: 1px solid #fcc;
+  border-radius: var(--radius-sm);
+  color: #d32f2f;
+  font-size: 0.875rem;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.successMessage {
+  padding: 12px;
+  background-color: #e8f5e9;
+  border: 1px solid #c8e6c9;
+  border-radius: var(--radius-sm);
+  color: #2e7d32;
+  font-size: 0.875rem;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.infoMessage {
+  padding: 12px;
+  background-color: #e3f2fd;
+  border: 1px solid #bbdefb;
+  border-radius: var(--radius-sm);
+  color: #1976d2;
+  font-size: 0.875rem;
+  margin-bottom: 16px;
+  text-align: center;
 }
 
 .inputGroup {
@@ -62,6 +101,21 @@
   box-shadow: 0 0 0 3px rgba(46, 58, 140, 0.1);
 }
 
+.inputGroup small {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.codeInput {
+  text-align: center;
+  letter-spacing: 0.5em;
+  font-size: 1.5rem !important;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
 .authBtn {
   width: 100%;
   padding: 12px;
@@ -75,6 +129,35 @@
 .authBtn:hover {
   background-color: var(--primary-light);
   transform: translateY(-1px);
+}
+
+.authBtn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.secondaryBtn {
+  width: 100%;
+  padding: 12px;
+  background-color: transparent;
+  color: var(--primary-color);
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-top: 8px;
+  border: 1px solid var(--primary-color);
+}
+
+.secondaryBtn:hover {
+  background-color: rgba(46, 58, 140, 0.05);
+  transform: translateY(-1px);
+}
+
+.secondaryBtn:disabled {
+  border-color: #ccc;
+  color: #ccc;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .authFooter {

@@ -1,5 +1,5 @@
 :root {
-  /* Colors */
+  /* Colors - Light Mode */
   --primary-color: #2E3A8C;
   --primary-light: #4A5FD9;
   --primary-dark: #1A2254;
@@ -28,6 +28,34 @@
   --transition: all 0.2s ease;
 }
 
+/* Dark Mode */
+[data-theme="dark"] {
+  --primary-color: #4A5FD9;
+  --primary-light: #6B7FE8;
+  --primary-dark: #2E3A8C;
+  --secondary-color: #6B7FE8;
+  
+  --bg-color: #0F1419;
+  --card-bg: #1A1F2E;
+  
+  --text-primary: #E8EAED;
+  --text-secondary: #B8BDC5;
+  --text-light: #8B92A0;
+  --white: #FFFFFF;
+  
+  --error: #F44336;
+  --success: #4CAF50;
+  --warning: #FFB300;
+  
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Glassmorphism adjustments for dark mode */
+[data-theme="dark"] .glass {
+  background: rgba(26, 31, 46, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -40,6 +68,7 @@ body {
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 button {
@@ -63,4 +92,20 @@ button {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: background 0.3s ease, border 0.3s ease;
+}
+
+/* Privacy Mode - Blur sensitive data */
+[data-privacy="on"] .sensitive,
+[data-privacy="on"] [data-sensitive="true"] {
+  filter: blur(8px);
+  user-select: none;
+  pointer-events: none;
+  transition: filter 0.2s ease;
+}
+
+[data-privacy="on"] .sensitive:hover,
+[data-privacy="on"] [data-sensitive="true"]:hover {
+  filter: blur(0px);
+  pointer-events: auto;
 }

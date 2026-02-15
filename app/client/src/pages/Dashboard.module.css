@@ -26,6 +26,10 @@
   box-shadow: 0 12px 20px rgba(0, 0, 0, 0.05);
 }
 
+[data-theme="dark"] .kpiCard:hover {
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+}
+
 .kpiTitle {
   font-size: 0.875rem;
   color: var(--text-secondary);
