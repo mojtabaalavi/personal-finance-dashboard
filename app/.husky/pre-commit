@@ -1,0 +1,12 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🔒 Running Security Check..."
+npm audit --audit-level=high
+
+echo "🎨 Running Linter..."
+npm run lint
+
+echo "✅ Running Unit Tests..."
+npm test
+

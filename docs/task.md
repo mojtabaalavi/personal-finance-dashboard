@@ -1,0 +1,79 @@
+# Personal Finance Dashboard - Task List
+
+- [x] Project Initialization <!-- id: 0 -->
+    - [x] Create Vite + React + TypeScript project in `d:/Personal/personal-finance-dashboard/app` <!-- id: 1 -->
+    - [x] Setup Design System (CSS Variables, Fonts, Global Styles) based on `brandGuidelines.md` <!-- id: 2 -->
+    - [x] Install necessary dependencies (`papaparse`, `xlsx`, `recharts`, `lucide-react`, `uuid`, etc.) <!-- id: 3 -->
+- [/] Feature: Infrastructure & DevOps (Docker + Microservices) <!-- id: 4 -->
+    - [x] **Docker Infrastructure**: Create `docker-compose.yml` (Postgres, Services, Gateway) <!-- id: 66 -->
+    - [x] **API Gateway**: Setup `gateway` service (Reverse Proxy) to route requests <!-- id: 67 -->
+    - [x] **Database Setup**: Configure **PostgreSQL** container (Multi-DB support) <!-- id: 68 -->
+    - [x] Create `package.json` scripts (`docker:build`, `docker:up`, `docker:down`) <!-- id: 69 -->
+- [x] Feature: Quality Assurance & Pipeline <!-- id: 75 -->
+    - [x] **Testing Frameworks**: Setup Jest/Vitest (Unit), Supertest (Integration), Playwright (UI) <!-- id: 76 -->
+    - [x] **Contract Testing**: Implement **Pact** consumers/providers for Service-to-Service comms <!-- id: 77 -->
+    - [x] **Pre-commit Hooks (Husky)**:
+        - [x] Linting & Formatting (Eslint, Prettier) <!-- id: 78 -->
+        - [x] Security Check (`npm audit`, `trivy` scan) <!-- id: 79 -->
+        - [x] Run Unit Tests before commit <!-- id: 80 -->
+- [ ] Feature: Backend Services <!-- id: 70 -->
+    - [x] **Auth Service**: User Management, JWT, RBAC, CDC <!-- id: 71 -->
+    - [ ] **Finance Service**: Bank Accounts, Transactions, Parsing Engine, Categories <!-- id: 72 -->
+    - [ ] **Property Service**: Assets, Mortgages, Insurance, Rental Agreements <!-- id: 73 -->
+    - [ ] **Reporting Service**: Aggregation, Tax Reports, Dashboard Stats <!-- id: 74 -->
+    - [ ] **AI Service**: LLM Integration, RAG (Categories), Chat API <!-- id: 81 -->
+        - [ ] **Smart Categorization**: Logic to suggest Main/Sub Categories for unknown transactions <!-- id: 82 -->
+        - [ ] **Chat Agent**: Conversational interface for querying financial data <!-- id: 83 -->
+- [ ] Feature: Security & User Management <!-- id: 38 -->
+    - [ ] **Authentication UI**: Login, Register forms connected to Gateway <!-- id: 39 -->
+    - [ ] **Admin Dashboard**: Manage Users via Auth Service API <!-- id: 41 -->
+    - [ ] **Privacy Mode**: Global "Mask Data" toggle (Frontend state) <!-- id: 42 -->
+- [ ] Feature: Configuration & Categories <!-- id: 8 -->
+    - [ ] Implement `categories.csv` parser and utility <!-- id: 9 -->
+    - [ ] Create Settings page to manage Categories/Keywords <!-- id: 10 -->
+    - [ ] **Bank Registry Manager**:
+        - [ ] CRUD Bank Accounts (Name, Number, Type) <!-- id: 11 -->
+        - [ ] **Bank Type Manager**: Admin can Add/Remove types (Saving, Loan, CreditCard, DaytoDay, etc.) <!-- id: 49 -->
+- [ ] Feature: Bank Statement Processing <!-- id: 12 -->
+    - [ ] **Secure Upload Workflow**:
+        - [ ] Upload to `server/uploads/temp` <!-- id: 62 -->
+        - [ ] Process & Analyze (Clean, Detect Duplicates, Assign Categories) <!-- id: 63 -->
+        - [ ] **Validation Report**: Return analysis results to UI for User Approval <!-- id: 64 -->
+        - [ ] **Commit & Cleanup**: On approval, save to DB and delete temp file <!-- id: 65 -->
+    - [ ] **Smart Upload Interface**: Drag & Drop -> Auto-detect Account Number -> Select Parser <!-- id: 13 -->
+    - [ ] **Parser Engine**: Generic Engine that takes a `ParserConfig` (JSON) and processes files <!-- id: 14 -->
+    - [ ] **Parser Management (Admin)**:
+        - [ ] UI to View/Edit Parser Configurations (Column mappings, Date formats). <!-- id: 50 -->
+        - [ ] **Versioning System**: Save new versions of parsers, set "Default" version per Bank. <!-- id: 51 -->
+    - [ ] Implement Parsing Logic for ASB, ANZ, KiwiBank (as initial DB Configs) <!-- id: 32 -->
+    - [ ] Implement Transaction Verification & De-duplication Logic <!-- id: 16 -->
+    - [ ] Build "Uncategorized/New Transaction" Review UI <!-- id: 17 -->
+- [ ] Feature: Transactions & Dashboard <!-- id: 18 -->
+    - [ ] Transaction List View (Filters, Search, Edit) <!-- id: 19 -->
+    - [ ] Dashboard Widgets (Balance, Income vs Expense, Savings) <!-- id: 20 -->
+    - [ ] **Expense Comparison Chart**: Bar chart with timeframes (Monthly [Default], 3 Months, 6 Months, Yearly) <!-- id: 52 -->
+    - [ ] **AI Chat Widget**: Floating Chatbot for Q&A and Categorization assistance <!-- id: 84 -->
+- [ ] Feature: Assets & Liabilities <!-- id: 21 -->
+    - [ ] Assets Management UI (5 Types: Saving/Cash, Superannuation, Property, Vehicle, Contents) <!-- id: 22 -->
+    - [ ] Liabilities Management UI (Credit Cards, Mortgage) <!-- id: 23 -->
+    - [ ] **Property & Mortgage Manager**:
+        - [ ] Track Property Type (**Rental** vs **Own**) <!-- id: 53 -->
+        - [ ] **Financial Details**: Current Value, Insurance, Council Rates, Maintenance Costs <!-- id: 54 -->
+        - [ ] **Income/Expense**: Rent & Mortgage Frequency (Weekly/Fortnightly/Monthly), Current Loan Amount <!-- id: 55 -->
+        - [ ] **Rental Agreement**: Track Tenant, Lease Start/End, Due Day, Payment Keywords <!-- id: 60 -->
+        - [ ] **Rent Matching Logic**: Auto-link Bank Transactions to Property based on Keyword (Partial/Full) <!-- id: 61 -->
+        - [ ] **Calculations**: Net Income (Before/After Expenses), Estimated Tax, Rental Summary <!-- id: 56 -->
+        - [ ] "Fix Rate Expiry" Notification (3 months notice) <!-- id: 24 -->
+    - [ ] **Insurance Manager**:
+        - [ ] Track Policies (Health, Life, Property, Car) linked to Assets or Persons <!-- id: 57 -->
+        - [ ] **Details**: Premium (Yearly/Monthly), Excess, Agreed Value, Start/End Dates <!-- id: 58 -->
+        - [ ] **Renewal Logic**: Track "Remaining Period", Alert when Overdue/Due Soon <!-- id: 59 -->
+- [ ] Feature: Reporting <!-- id: 25 -->
+    - [ ] Implement Financial Year Logic (1 Apr - 31 Mar) <!-- id: 26 -->
+    - [ ] Build Reports Page (Monthly, Yearly, Comparison) <!-- id: 27 -->
+    - [ ] **Property Tax Report**: P&L Statement per Property (Income vs Expenses) <!-- id: 36 -->
+    - [ ] **Transaction Tagging**: Link Transactions to specific Assets (e.g., "Property 1") <!-- id: 37 -->
+- [ ] Verification & Polish <!-- id: 28 -->
+    - [ ] Test with sample data (`sampleBankStatements`) <!-- id: 29 -->
+    - [ ] Verify Mobile Responsiveness & Design Polish <!-- id: 30 -->
+    - [ ] Create Walkthrough <!-- id: 31 -->

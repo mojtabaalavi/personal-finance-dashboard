@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AssetType {
+  PROPERTY_OWN
+  PROPERTY_RENTAL
+  VEHICLE
+  CASH
+  SUPERANNUATION
+  CONTENTS
+}
+
+model Asset {
+  id            String            @id @default(uuid())
+  name          String
+  type          AssetType
+  value         Decimal           @db.Decimal(15, 2)
+  owner         String            // Person Name or ID
+  
+  // Property Specifics (Nullable if not property)
+  address       String?
+  liabilities   Liability[]
+  insurances    Insurance[]
+  agreements    RentalAgreement[]
+
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+}
+
+model AssetHistory {
+  id            String   @id @default(uuid())
+  assetId       String
+  value         Decimal  @db.Decimal(15, 2)
+  changedAt     DateTime @default(now())
+  changedBy     String?
+}
+
+model Liability {
+  id            String    @id @default(uuid())
+  name          String
+  type          String    // MORTGAGE, LOAN
+  amount        Decimal   @db.Decimal(15, 2)
+  interestRate  Decimal?
+  fixExpiry     DateTime?
+  
+  assetId       String?
+  asset         Asset?    @relation(fields: [assetId], references: [id])
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model LiabilityHistory {
+  id            String   @id @default(uuid())
+  liabilityId   String
+  amount        Decimal  @db.Decimal(15, 2)
+  interestRate  Decimal?
+  changedAt     DateTime @default(now())
+  changedBy     String?
+}
+
+model Insurance {
+  id            String    @id @default(uuid())
+  provider      String
+  policyNumber  String
+  premium       Decimal   @db.Decimal(10, 2)
+  coverage      Decimal   @db.Decimal(15, 2)
+  excess        Decimal   @db.Decimal(10, 2)
+  renewalDate   DateTime
+  
+  assetId       String?
+  asset         Asset?    @relation(fields: [assetId], references: [id])
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model RentalAgreement {
+  id            String    @id @default(uuid())
+  tenantName    String
+  rentAmount    Decimal   @db.Decimal(10, 2)
+  frequency     String    // WEEKLY, FORTNIGHTLY, MONTHLY
+  startDate     DateTime
+  endDate       DateTime?
+  
+  assetId       String
+  asset         Asset     @relation(fields: [assetId], references: [id])
+  
+  matchKeywords String[]  // Keywords for auto-matching payments
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}

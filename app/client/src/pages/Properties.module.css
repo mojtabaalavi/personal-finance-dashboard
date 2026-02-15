@@ -1,0 +1,147 @@
+.propertiesPage {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.summaryCard {
+  background-color: var(--card-bg);
+  padding: 24px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sumInfo span {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.sumInfo h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.sumIcon {
+  color: #e2e8f0;
+  width: 40px;
+  height: 40px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sectionHeader h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.addBtn {
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.assetsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 24px;
+}
+
+.propertyCard {
+  background-color: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.iconHeader {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  color: var(--white);
+}
+
+.blue { background-color: var(--primary-color); }
+.green { background-color: var(--success); }
+.purple { background-color: #805AD5; }
+
+.cardContent {
+  padding: 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.titleInfo h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.address {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat span {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.stat strong {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.pos { color: var(--success); }
+.neg { color: var(--error); }
+
+.progressBarWrapper {
+  height: 8px;
+  background-color: #f7fafc;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: auto;
+}
+
+.progressBar {
+  height: 100%;
+  background-color: var(--primary-light);
+  border-radius: 4px;
+}

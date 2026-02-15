@@ -1,0 +1,143 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "MJ Solutionss Finance Hub API",
+    "description": "Comprehensive API documentation for the Personal Finance Dashboard microservices.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000",
+      "description": "API Gateway"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Register a new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "example": "user@example.com" },
+                  "password": { "type": "string", "example": "Password123!" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "User created" }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login to get JWT",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "example": "user@example.com" },
+                  "password": { "type": "string", "example": "Password123!" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Login successful" }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get current user profile",
+        "responses": {
+          "200": { "description": "Success" }
+        }
+      }
+    },
+    "/api/finance/transactions": {
+      "get": {
+        "tags": ["Finance"],
+        "summary": "Get all transactions",
+        "responses": {
+          "200": { "description": "Success" }
+        }
+      }
+    },
+    "/api/finance/accounts": {
+      "get": {
+        "tags": ["Finance"],
+        "summary": "Get all bank accounts",
+        "responses": {
+          "200": { "description": "Success" }
+        }
+      }
+    },
+    "/api/property/assets": {
+      "get": {
+        "tags": ["Property"],
+        "summary": "Get all assets",
+        "responses": {
+          "200": { "description": "Success" }
+        }
+      }
+    },
+    "/api/ai/chat": {
+      "post": {
+        "tags": ["AI"],
+        "summary": "Chat with AI advisor",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": { "type": "string", "example": "What is my net worth?" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "AI response" }
+        }
+      }
+    },
+    "/api/reporting/dashboard-kpis": {
+      "get": {
+        "tags": ["Reporting"],
+        "summary": "Get aggregate financial KPIs",
+        "responses": {
+          "200": { "description": "Success" }
+        }
+      }
+    }
+  }
+}

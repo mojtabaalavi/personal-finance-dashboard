@@ -1,0 +1,46 @@
+{
+  "name": "personal-finance-dashboard",
+  "version": "1.0.0",
+  "description": "Local-first Personal Finance Dashboard with Microservices",
+  "private": true,
+  "workspaces": [
+    "services/*",
+    "gateway",
+    "packages/*",
+    "client"
+  ],
+  "scripts": {
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose build",
+    "docker:logs": "docker-compose logs -f",
+    "dev": "concurrently \"npm run dev:gateway\" \"npm run dev:auth\" \"npm run dev:finance\" \"npm run dev:property\" \"npm run dev:ai\" \"npm run dev:client\" \"npm run dev:reporting\"",
+    "dev:gateway": "npm run dev --workspace=gateway",
+    "dev:auth": "npm run dev --workspace=services/auth",
+    "dev:finance": "npm run dev --workspace=services/finance",
+    "dev:property": "npm run dev --workspace=services/property",
+    "dev:ai": "npm run dev --workspace=services/ai",
+    "dev:reporting": "npm run dev --workspace=services/reporting",
+    "dev:client": "npm run dev --workspace=client",
+    "test": "vitest",
+    "test:all": "concurrently \"npm run test:auth\" \"npm run test:finance\" \"npm run test:property\" \"npm run test:ai\" \"npm run test:reporting\"",
+    "test:auth": "npm test --workspace=services/auth",
+    "test:finance": "npm test --workspace=services/finance",
+    "test:property": "npm test --workspace=services/property",
+    "test:ai": "npm test --workspace=services/ai",
+    "test:reporting": "npm test --workspace=services/reporting",
+    "lint": "eslint . --ext .ts,.tsx",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "concurrently": "^9.1.1",
+    "husky": "^9.1.7",
+    "turbo": "^2.3.3"
+  },
+  "overrides": {
+    "glob": "^11.0.0",
+    "graphql": "^16.10.0",
+    "langsmith": "^0.5.4"
+  }
+}

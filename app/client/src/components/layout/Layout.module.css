@@ -1,0 +1,159 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 260px;
+  background-color: var(--primary-dark);
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 0;
+  position: fixed;
+  height: 100vh;
+}
+
+.logo {
+  padding: 0 24px 32px;
+}
+
+.logo h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.logo p {
+  font-size: 0.75rem;
+  color: #a0aec0;
+  letter-spacing: 1px;
+}
+
+.nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sectionTitle {
+  font-size: 0.650rem;
+  text-transform: uppercase;
+  color: #718096;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 0 24px 8px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  color: #cbd5e0;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.navItem:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--white);
+}
+
+.navItem.active {
+  background-color: var(--primary-color);
+  color: var(--white);
+  border-right: 4px solid var(--primary-light);
+}
+
+.sidebarFooter {
+  padding: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.userDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.userEmail {
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+.userRole {
+  font-size: 0.625rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--primary-light);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.logoutBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background-color: transparent;
+  color: #feb2b2;
+  font-size: 0.875rem;
+}
+
+.logoutBtn:hover {
+  background-color: rgba(254, 178, 178, 0.1);
+}
+
+.main {
+  flex: 1;
+  margin-left: 260px;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  height: 64px;
+  background-color: var(--card-bg);
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.header h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.content {
+  padding: 32px;
+  flex: 1;
+}
+
+.privacyToggle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  background-color: #f7fafc;
+  border: 1px solid #e2e8f0;
+  color: var(--text-secondary);
+}

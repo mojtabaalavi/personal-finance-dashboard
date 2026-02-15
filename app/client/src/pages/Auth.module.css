@@ -1,0 +1,95 @@
+.authPage {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-color);
+  background-image: radial-gradient(circle at top right, rgba(74, 95, 217, 0.1), transparent),
+                    radial-gradient(circle at bottom left, rgba(46, 58, 140, 0.05), transparent);
+}
+
+.authCard {
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--card-bg);
+  padding: 40px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.authHeader {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.authHeader h1 {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.authHeader p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.inputGroup {
+  margin-bottom: 20px;
+}
+
+.inputGroup label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.inputGroup input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.inputGroup input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(46, 58, 140, 0.1);
+}
+
+.authBtn {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary-color);
+  color: var(--white);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.authBtn:hover {
+  background-color: var(--primary-light);
+  transform: translateY(-1px);
+}
+
+.authFooter {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.authFooter span {
+  color: var(--primary-color);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.authFooter span:hover {
+  text-decoration: underline;
+}

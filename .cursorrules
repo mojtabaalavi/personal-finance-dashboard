@@ -1,0 +1,27 @@
+# Cursor Rules & Copilot Instructions
+
+## Project Context
+- **Name**: Personal Finance Dashboard
+- **Stack**: React (Vite), Node.js (Express), PostgreSQL, Prisma, Docker.
+- **Architecture**: Microservices (Auth, Finance, Property).
+- **Style**: CSS Modules, Vanilla CSS (Premium Design).
+
+## Code Style Rules
+1.  **TypeScript**: Always define return types. Use Interfaces for Props. Avoid `any`.
+2.  **React**: Use Functional Components and Hooks. Minimize `useEffect`.
+3.  **Backend**:
+    -   Controller -> Service -> Repository (Prisma) pattern.
+    -   Always handle errors with `try/catch` and `next(error)`.
+4.  **Testing**:
+    -   Write tests for every new feature.
+    -   Use `describe/it` blocks.
+
+## Key Files
+- `d:/Personal/personal-finance-dashboard/docs/architecture_review.md` (System Design)
+- `d:/Personal/personal-finance-dashboard/docs/project_guidelines.md` (Standards)
+- `server/prisma/schema.prisma` (Database Truth)
+
+## Task Specifics
+- When creating a **UI Component**, check `brandGuidelines.md` for colors/fonts.
+- When creating a **Database Model**, remember to add CDC fields (`validFrom`, `validTo`).
+- When modifying **API**, update the **OpenAPI/Swagger** spec and **Pact** tests.

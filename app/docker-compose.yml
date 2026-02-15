@@ -1,0 +1,134 @@
+version: '3.8'
+
+services:
+  # --- Core Infrastructure ---
+  db:
+    image: postgres:15-alpine
+    container_name: pfd_postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: pfd_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # --- Backend Services ---
+  gateway:
+    build: 
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: pfd_gateway
+    ports:
+      - "4000:4000"
+    depends_on:
+      - auth-service
+      - finance-service
+      - property-service
+      - ai-service
+      - reporting-service
+    environment:
+      - AUTH_SERVICE_URL=http://auth-service:4001
+      - FINANCE_SERVICE_URL=http://finance-service:4002
+      - PROPERTY_SERVICE_URL=http://property-service:4003
+      - AI_SERVICE_URL=http://ai-service:4004
+      - REPORTING_SERVICE_URL=http://reporting-service:4005
+
+  auth-service:
+    build:
+      context: ./services/auth
+      dockerfile: Dockerfile
+    container_name: pfd_auth
+    ports:
+      - "4001:4001"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://admin:password123@db:5432/pfd_db?schema=public
+      - JWT_SECRET=supersecretkey
+      - PORT=4001
+
+  finance-service:
+    build:
+      context: ./services/finance
+      dockerfile: Dockerfile
+    container_name: pfd_finance
+    ports:
+      - "4002:4002"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://admin:password123@db:5432/pfd_db?schema=public
+      - PORT=4002
+      - JWT_SECRET=supersecretkey
+
+  property-service:
+    build:
+      context: ./services/property
+      dockerfile: Dockerfile
+    container_name: pfd_property
+    ports:
+      - "4003:4003"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://admin:password123@db:5432/pfd_db?schema=public
+      - PORT=4003
+      - JWT_SECRET=supersecretkey
+
+  ai-service:
+    build:
+      context: ./services/ai
+      dockerfile: Dockerfile
+    container_name: pfd_ai
+    ports:
+      - "4004:4004"
+    depends_on:
+      - ollama
+    environment:
+      - PORT=4004
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=llama3 # Standard local model
+      - JWT_SECRET=supersecretkey
+
+  reporting-service:
+    build:
+      context: ./services/reporting
+      dockerfile: Dockerfile
+    container_name: pfd_reporting
+    ports:
+      - "4005:4005"
+    depends_on:
+      - finance-service
+      - property-service
+    environment:
+      - PORT=4005
+      - FINANCE_SERVICE_URL=http://finance-service:4002
+      - PROPERTY_SERVICE_URL=http://property-service:4003
+      - JWT_SECRET=supersecretkey
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: pfd_ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+  # --- Frontend ---
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:4000
+    container_name: pfd_client
+    ports:
+      - "3000:80"
+    depends_on:
+      - gateway
+      
+volumes:
+  postgres_data:
+  ollama_data:

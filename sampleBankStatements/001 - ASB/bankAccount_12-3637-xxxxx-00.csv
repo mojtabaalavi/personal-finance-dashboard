@@ -1,0 +1,11 @@
+Created date / time : 7 April 2024 / 08:52:53,,,,,,
+Bank 12; Branch xxxx; Account xxxxxx-00 (Cash Management Account),,,,,,
+From date 20210401,,,,,,
+To date 20220331,,,,,,
+Ledger Balance : 0.00 as of 20240407,,,,,,
+Date,Unique Id,Tran Type,Cheque Number,Payee,Memo,Amount
+,,,,,,
+8/02/2022,,TFR IN,,MB TRANSFER,EX 12-3057- 0187746-01,12456.54
+10/02/2022,,TFR OUT,,Transfer,B 9000 A .AHI T22336786,-5039.84
+10/02/2022,,TFR OUT,,Transfer,B 2000 A .AHI T22336784,-188.88
+24/02/2022,,TFR OUT,,MB TRANSFER,TO 12-3057- 0187746-01,-396.16

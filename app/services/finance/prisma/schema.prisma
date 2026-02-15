@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model BankAccountType {
+  id        String        @id @default(uuid())
+  name      String        @unique // Saving, Cheque, CreditCard, Loan
+  accounts  BankAccount[]
+}
+
+model BankAccount {
+  id            String          @id @default(uuid())
+  name          String
+  accountNumber String          @unique
+  bankName      String
+  balance       Decimal         @default(0) @db.Decimal(15, 2)
+  typeId        String
+  type          BankAccountType @relation(fields: [typeId], references: [id])
+  transactions  Transaction[]
+  parserConfigs ParserConfig[]
+  
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+model BankAccountHistory {
+  id            String   @id @default(uuid())
+  bankAccountId String
+  balance       Decimal  @db.Decimal(15, 2)
+  changedAt     DateTime @default(now())
+  changedBy     String?  // User ID who made the change
+}
+
+model Transaction {
+  id            String      @id @default(uuid())
+  date          DateTime
+  amount        Decimal     @db.Decimal(15, 2)
+  description   String
+  rawText       String?
+  type          TransactionType @default(EXPENSE)
+  
+  bankAccountId String
+  bankAccount   BankAccount @relation(fields: [bankAccountId], references: [id])
+  
+  categoryId    String?
+  subCategoryId String?
+  category      Category?    @relation(fields: [categoryId], references: [id])
+  subCategory   SubCategory?  @relation(fields: [subCategoryId], references: [id])
+
+  // Asset Linking (Property/Liability)
+  linkedAssetId String?     // ID from Property Service (Loose coupling)
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([date])
+  @@index([bankAccountId])
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+model TransactionHistory {
+  id            String   @id @default(uuid())
+  transactionId String
+  categoryId    String?
+  subCategoryId String?
+  amount        Decimal  @db.Decimal(15, 2)
+  changedAt     DateTime @default(now())
+  changedBy     String?
+}
+
+model Category {
+  id            String        @id @default(uuid())
+  name          String        @unique
+  type          TransactionType
+  subCategories SubCategory[]
+  transactions  Transaction[]
+}
+
+model SubCategory {
+  id           String        @id @default(uuid())
+  name         String
+  categoryId   String
+  category     Category      @relation(fields: [categoryId], references: [id])
+  transactions Transaction[]
+
+  @@unique([name, categoryId])
+}
+
+model ParserConfig {
+  id            String      @id @default(uuid())
+  name          String
+  bankName      String
+  bankAccountId String?
+  bankAccount   BankAccount? @relation(fields: [bankAccountId], references: [id])
+  
+  rules         Json        // Stores column mapping, regex, dateFormat
+  isActive      Boolean     @default(true)
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
