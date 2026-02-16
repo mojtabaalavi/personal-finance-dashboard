@@ -13,7 +13,7 @@ const UserManagement: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await api.get('/api/auth');
+      const response = await api.get('/api/users');
       setUsers(response.data);
     } catch (error) {
       console.error('Failed to fetch users');
@@ -24,7 +24,7 @@ const UserManagement: React.FC = () => {
 
   const handleToggleLock = async (id: string) => {
     try {
-      await api.patch(`/api/auth/${id}/lock`);
+      await api.patch(`/api/users/${id}/lock`);
       fetchUsers();
     } catch (error) {
       alert('Failed to update user status');
@@ -33,7 +33,7 @@ const UserManagement: React.FC = () => {
 
   const handlePromote = async (id: string, role: string) => {
     try {
-      await api.patch(`/api/auth/${id}/permissions`, { role });
+      await api.patch(`/api/users/${id}/permissions`, { role });
       fetchUsers();
     } catch (error) {
       alert('Failed to update user role');
