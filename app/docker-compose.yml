@@ -44,6 +44,7 @@ services:
       - db
       - mailhog
     environment:
+      - NODE_ENV=development
       - DATABASE_URL=postgresql://admin:password123@db:5432/pfd_db?schema=auth
       - JWT_SECRET=supersecretkey
       - PORT=4001
@@ -94,7 +95,7 @@ services:
       - DATABASE_URL=postgresql://admin:password123@db:5432/pfd_db?schema=ai
       - PORT=4004
       - OLLAMA_BASE_URL=http://ollama:11434
-      - OLLAMA_MODEL=llama3 # Standard local model
+      - OLLAMA_MODEL=llama3.2
       - JWT_SECRET=supersecretkey
 
   reporting-service:

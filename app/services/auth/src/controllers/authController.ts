@@ -47,29 +47,37 @@ export const register = async (req: Request, res: Response) => {
     const verificationToken = generateEmailVerificationToken();
     const verificationExpiry = getEmailVerificationExpiry();
 
+    // Auto-verify emails in test/development environment
+    const isTestOrDev = process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development';
+
     const user = await prisma.user.create({
       data: {
         email,
         passwordHash,
         role: 'USER',
-        emailVerified: false,
-        emailVerificationToken: verificationToken,
-        emailVerificationExpiry: verificationExpiry,
+        emailVerified: isTestOrDev ? true : false,
+        emailVerificationToken: isTestOrDev ? null : verificationToken,
+        emailVerificationExpiry: isTestOrDev ? null : verificationExpiry,
+        twoFactorEnabled: false, // Disable 2FA by default for new users
       },
     });
 
-    // Send verification email
-    try {
-      await emailService.sendVerificationEmail(email, verificationToken);
-    } catch (emailError) {
-      console.error('Failed to send verification email:', emailError);
-      // Continue registration even if email fails
+    // Send verification email only in production
+    if (!isTestOrDev) {
+      try {
+        await emailService.sendVerificationEmail(email, verificationToken);
+      } catch (emailError) {
+        console.error('Failed to send verification email:', emailError);
+        // Continue registration even if email fails
+      }
     }
 
     res.status(201).json({
-      message: 'Registration successful. Please check your email to verify your account.',
+      message: isTestOrDev 
+        ? 'Registration successful. You can now log in.'
+        : 'Registration successful. Please check your email to verify your account.',
       email: user.email,
-      requiresVerification: true,
+      requiresVerification: !isTestOrDev,
     });
   } catch (error) {
     res.status(400).json({ error: error instanceof Error ? error.message : 'Registration failed' });

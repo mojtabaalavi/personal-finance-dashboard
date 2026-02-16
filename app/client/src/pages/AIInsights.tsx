@@ -14,7 +14,7 @@ const AIInsights: React.FC = () => {
     { 
       id: '1', 
       role: 'assistant', 
-      content: 'Hello! I am your MJ Solutionss AI assistant. How can I help you with your finances today?' 
+      content: 'Hello! I am your MJ Solutions AI assistant. How can I help you with your finances today?' 
     }
   ]);
   const [input, setInput] = useState('');
@@ -37,8 +37,10 @@ const AIInsights: React.FC = () => {
     try {
       // Call real AI service
       const response = await api.post('/api/ai/chat', {
-        message: input,
-        conversationHistory: messages.slice(-5), // Send last 5 messages for context
+        messages: [...messages, userMessage].slice(-10).map(msg => ({
+          role: msg.role,
+          content: msg.content
+        }))
       });
 
       const assistantMessage: Message = {
