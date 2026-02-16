@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  schemas  = ["property"]
 }
 
 enum AssetType {
@@ -15,6 +15,8 @@ enum AssetType {
   CASH
   SUPERANNUATION
   CONTENTS
+
+  @@schema("property")
 }
 
 model Asset {
@@ -32,6 +34,8 @@ model Asset {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@schema("property")
 }
 
 model AssetHistory {
@@ -40,6 +44,8 @@ model AssetHistory {
   value     Decimal  @db.Decimal(15, 2)
   changedAt DateTime @default(now())
   changedBy String?
+
+  @@schema("property")
 }
 
 model Liability {
@@ -55,6 +61,8 @@ model Liability {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@schema("property")
 }
 
 model LiabilityHistory {
@@ -64,6 +72,8 @@ model LiabilityHistory {
   interestRate Decimal?
   changedAt    DateTime @default(now())
   changedBy    String?
+
+  @@schema("property")
 }
 
 model Insurance {
@@ -80,6 +90,8 @@ model Insurance {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@schema("property")
 }
 
 model RentalAgreement {
@@ -97,4 +109,6 @@ model RentalAgreement {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@schema("property")
 }

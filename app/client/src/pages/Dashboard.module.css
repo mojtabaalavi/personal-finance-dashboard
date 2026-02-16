@@ -92,3 +92,42 @@
   height: 300px;
   width: 100%;
 }
+
+.loadingContainer,
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  gap: 16px;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  color: var(--primary-color);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.errorText {
+  color: var(--error);
+  font-size: 0.875rem;
+}
+
+.retryBtn {
+  background-color: var(--primary-color);
+  color: var(--white);
+  padding: 10px 24px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  border: none;
+}
+
+.retryBtn:hover {
+  opacity: 0.9;
+}

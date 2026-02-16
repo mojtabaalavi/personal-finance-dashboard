@@ -231,3 +231,204 @@
   color: var(--white) !important;
   border-color: var(--primary-color) !important;
 }
+
+/* Filter Panel */
+.filtersPanel {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  background-color: var(--card-bg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 200px;
+}
+
+.filterGroup label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filterGroup input,
+.filterGroup select {
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  background-color: var(--card-bg);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .filterGroup input,
+[data-theme="dark"] .filterGroup select {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.clearFiltersBtn {
+  padding: 10px 16px;
+  background-color: transparent;
+  border: 1px solid #e2e8f0;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .clearFiltersBtn {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.clearFiltersBtn:hover {
+  background-color: #f7fafc;
+}
+
+[data-theme="dark"] .clearFiltersBtn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalContent {
+  background-color: var(--card-bg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+[data-theme="dark"] .modalHeader {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+}
+
+.modalHeader button {
+  background: transparent;
+  padding: 4px;
+  color: var(--text-light);
+}
+
+.modalHeader button:hover {
+  color: var(--text-primary);
+}
+
+.modalContent form {
+  padding: 24px;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.formGroup input,
+.formGroup select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  background-color: var(--card-bg);
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .formGroup input,
+[data-theme="dark"] .formGroup select {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.formGroup input:focus,
+.formGroup select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(46, 58, 140, 0.05);
+}
+
+.modalActions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+[data-theme="dark"] .modalActions {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.cancelBtn {
+  padding: 10px 16px;
+  background-color: transparent;
+  border: 1px solid #e2e8f0;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .cancelBtn {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.cancelBtn:hover {
+  background-color: #f7fafc;
+}
+
+[data-theme="dark"] .cancelBtn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.submitBtn {
+  padding: 10px 16px;
+  background-color: var(--primary-color);
+  color: var(--white);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.submitBtn:hover {
+  background-color: var(--primary-light);
+}
