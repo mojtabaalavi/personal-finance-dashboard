@@ -63,7 +63,8 @@ console.log(`- Reporting: ${REPORTING_SERVICE_URL}`);
 app.all('/api/auth/*', async (req, res) => {
   console.log(`[Gateway] *** AUTH ROUTE MATCHED *** Method: ${req.method}, URL: ${req.url}, Path: ${req.path}`);
   try {
-    const targetUrl = `${AUTH_SERVICE_URL}${req.path}`;
+    // Use req.url to include query parameters
+    const targetUrl = `${AUTH_SERVICE_URL}${req.url}`;
     console.log(`[Gateway] Forwarding to: ${targetUrl}`);
     console.log(`[Gateway] Body:`, req.body);
     
@@ -89,7 +90,8 @@ app.all('/api/auth/*', async (req, res) => {
 
 app.all('/api/users/*', async (req, res) => {
   try {
-    const targetUrl = `${AUTH_SERVICE_URL}${req.path}`;
+    // Use req.url to include query parameters
+    const targetUrl = `${AUTH_SERVICE_URL}${req.url}`;
     console.log(`[Gateway] Forwarding to: ${targetUrl}`);
     
     const response = await fetch(targetUrl, {

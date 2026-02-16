@@ -7,6 +7,7 @@ import Properties from './pages/Properties';
 import AIInsights from './pages/AIInsights';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import VerifyEmail from './pages/VerifyEmail';
 import UserManagement from './pages/admin/UserManagement';
 import ParserManagement from './pages/admin/ParserManagement';
 import { useAuthStore } from './store/authStore';
@@ -24,6 +25,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         
         <Route path="/" element={
           <ProtectedRoute>
