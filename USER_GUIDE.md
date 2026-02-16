@@ -122,33 +122,50 @@ chmod +x check-health.sh && ./check-health.sh
 
 All services should show **HEALTHY** status.
 
-### Step 6: Initialize Database Schema
+### Step 6: Initialize Database Tables
 
-The database schema is automatically created when services start via Prisma migrations.
+Create all database tables from Prisma schemas:
 
-### Step 7: Seed Database with Test Users (Optional)
+```powershell
+# Windows
+.\create-tables.ps1
+```
 
-For quick testing, seed the database with default admin and user accounts:
+This script creates 20 tables across 4 schemas (auth, finance, property, ai). This step is necessary because Prisma CLI has compatibility issues in Alpine containers.
+
+💡 **Safe to run multiple times** - uses `CREATE TABLE IF NOT EXISTS` patterns.
+
+### Step 7: Seed Database with Sample Data (Recommended for First-Time Users)
+
+The seed script populates **all services** with sample data to help you explore the application:
 
 ```powershell
 # Windows
 .\seed-database.ps1
-
-# Alternative: Run directly in container
-docker exec pfd_auth npm run seed
 ```
 
-**Default Admin Credentials**:
-- **Email**: `admin@example.com`
-- **Password**: `password123`
-- **Role**: ADMIN
+**What gets created:**
+- ✅ **Auth**: 2 test users (admin and regular user)
+- ✅ **Finance**: 3 bank accounts, 20 sample transactions, 7 categories
+- ✅ **Property**: 4 assets (homes, vehicles), 4 liabilities, insurance policies
+- ✅ **AI**: Sample conversation with financial insights
 
-**Default User Credentials**:
-- **Email**: `user@example.com`
-- **Password**: `password123`
-- **Role**: USER
+**Default Test Credentials**:
+- **Admin**: `admin@example.com` / `password123` (Role: ADMIN)
+- **User**: `user@example.com` / `password123` (Role: USER)
 
 ⚠️ **Important**: Login requires an **EMAIL ADDRESS**, not a username.
+
+**Safe Reseeding**: This script uses upsert patterns - you can run it multiple times without losing your own data! It only creates missing sample data and skips entries that already exist.
+
+**Manual Service Seeding** (if needed):
+```powershell
+# Seed individual services
+docker exec pfd_auth npm run seed       # Users only
+docker exec pfd_finance npm run seed    # Banking data
+docker exec pfd_property npm run seed   # Assets & properties
+docker exec pfd_ai npm run seed         # AI conversations
+```
 
 ---
 

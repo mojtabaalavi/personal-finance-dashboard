@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["ai"]
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+
+  @@schema("ai")
+}
+
+enum ConversationStatus {
+  ACTIVE
+  ARCHIVED
+  DELETED
+
+  @@schema("ai")
+}
+
+model Conversation {
+  id        String              @id @default(uuid())
+  userId    String              // Reference to user from auth service
+  title     String              @default("New Conversation")
+  status    ConversationStatus  @default(ACTIVE)
+  messages  Message[]
+  
+  // Financial context
+  contextAccountIds  String[]  // Bank account IDs for context
+  contextPropertyIds String[]  // Property IDs for context
+  
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@schema("ai")
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  
+  role           MessageRole
+  content        String       @db.Text
+  
+  // AI metadata
+  model          String?      // e.g., "gpt-4", "ollama/llama3"
+  tokenCount     Int?
+  processingTime Int?         // milliseconds
+  
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId])
+  @@schema("ai")
+}
+
+model Insight {
+  id          String   @id @default(uuid())
+  userId      String
+  title       String
+  description String   @db.Text
+  category    String   // SPENDING, SAVING, TAX, INVESTMENT
+  priority    String   // HIGH, MEDIUM, LOW
+  isRead      Boolean  @default(false)
+  isDismissed Boolean  @default(false)
+  
+  // Context references
+  relatedTransactionIds String[]
+  relatedConversationId String?
+  
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime?
+
+  @@index([userId])
+  @@index([isRead])
+  @@schema("ai")
+}
+
+model AnalyticsCache {
+  id         String   @id @default(uuid())
+  userId     String
+  cacheKey   String   // e.g., "monthly-spending-2024-03"
+  data       Json
+  expiresAt  DateTime
+  
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, cacheKey])
+  @@index([expiresAt])
+  @@schema("ai")
+}

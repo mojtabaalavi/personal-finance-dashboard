@@ -27,7 +27,35 @@ docker-compose up -d
 Start-Sleep -Seconds 30
 ```
 
-### 3. Verify Health
+### 3. Initialize Database Tables
+
+```powershell
+# Create database tables from Prisma schemas
+.\create-tables.ps1
+```
+
+This step creates the database structure (20 tables across 4 schemas). 
+
+💡 **Why is this needed?** This bypasses Prisma CLI issues in Alpine containers and ensures all tables are created correctly from the Prisma schema definitions.
+
+### 4. Seed Sample Data (Recommended for First-Time Users)
+
+```powershell
+# Populate database with sample data
+.\seed-database.ps1
+```
+
+This creates:
+- ✅ 2 test users (admin@example.com, user@example.com)
+- ✅ 3 bank accounts with 20 sample transactions
+- ✅ 4 assets (properties, vehicles) and liabilities
+- ✅ Sample AI conversation with insights
+
+💡 **Safe to run multiple times** - uses upsert patterns, won't delete your data!
+
+You can skip this step if you prefer to start with a clean slate and add your own data.
+
+### 5. Verify Health
 
 ```powershell
 # Run health check
@@ -36,13 +64,19 @@ Start-Sleep -Seconds 30
 
 You should see all services as **HEALTHY**.
 
-### 4. Access Application
+### 6. Access Application
 
 Open your browser and navigate to:
 - **Web UI**: http://localhost:3000
 - **API Gateway**: http://localhost:4000
 
-### 5. First Login
+### 7. First Login
+
+**Option A: Use Test Account (if you ran seed script)**
+- Admin: admin@example.com / password123
+- User: user@example.com / password123
+
+**Option B: Create Your Own Account**
 
 1. Click **"Register"** on the login page
 2. Create your account:

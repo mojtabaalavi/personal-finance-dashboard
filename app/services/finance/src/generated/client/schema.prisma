@@ -5,13 +5,15 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  schemas  = ["finance"]
 }
 
 model BankAccountType {
   id       String        @id @default(uuid())
   name     String        @unique // Saving, Cheque, CreditCard, Loan
   accounts BankAccount[]
+
+  @@schema("finance")
 }
 
 model BankAccount {
@@ -27,6 +29,8 @@ model BankAccount {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@schema("finance")
 }
 
 model BankAccountHistory {
@@ -35,6 +39,8 @@ model BankAccountHistory {
   balance       Decimal  @db.Decimal(15, 2)
   changedAt     DateTime @default(now())
   changedBy     String? // User ID who made the change
+
+  @@schema("finance")
 }
 
 model Transaction {
@@ -61,11 +67,14 @@ model Transaction {
 
   @@index([date])
   @@index([bankAccountId])
+  @@schema("finance")
 }
 
 enum TransactionType {
   INCOME
   EXPENSE
+
+  @@schema("finance")
 }
 
 model TransactionHistory {
@@ -76,6 +85,8 @@ model TransactionHistory {
   amount        Decimal  @db.Decimal(15, 2)
   changedAt     DateTime @default(now())
   changedBy     String?
+
+  @@schema("finance")
 }
 
 model Category {
@@ -84,6 +95,8 @@ model Category {
   type          TransactionType
   subCategories SubCategory[]
   transactions  Transaction[]
+
+  @@schema("finance")
 }
 
 model SubCategory {
@@ -94,6 +107,7 @@ model SubCategory {
   transactions Transaction[]
 
   @@unique([name, categoryId])
+  @@schema("finance")
 }
 
 model ParserConfig {
@@ -108,4 +122,6 @@ model ParserConfig {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@schema("finance")
 }

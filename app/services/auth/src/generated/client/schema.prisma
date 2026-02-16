@@ -5,11 +5,14 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  schemas  = ["auth"]
 }
 
 enum Role {
   USER
   ADMIN
+
+  @@schema("auth")
 }
 
 model User {
@@ -35,6 +38,7 @@ model User {
 
   @@index([email])
   @@index([emailVerificationToken])
+  @@schema("auth")
 }
 
 model UserHistory {
@@ -45,4 +49,6 @@ model UserHistory {
   permissions String[]
   changedAt   DateTime @default(now())
   changedBy   String? // ID of admin who changed it
+
+  @@schema("auth")
 }

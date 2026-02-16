@@ -19,6 +19,16 @@ docker-compose up -d
 .\check-health.ps1
 ```
 
+3. Initialize database tables:
+```bash
+.\create-tables.ps1
+```
+
+4. Seed the database (optional, for quick testing):
+```bash
+.\seed-database.ps1
+```
+
 ### Install Dependencies
 
 ```bash
@@ -27,18 +37,7 @@ npm install
 
 ## Default Test Users
 
-The database can be seeded with default test users for quick testing.
-
-### Seed the Database
-
-From the auth service directory:
-
-```bash
-cd ../../services/auth
-npm run seed
-```
-
-This creates:
+After running `.\seed-database.ps1`, the following test users are available:
 
 #### Admin User
 - **Email**: `admin@example.com`

@@ -18,5 +18,13 @@ RUN npm run build
 # Copy Prisma generated client to dist
 RUN cp -r src/generated dist/
 
+# Create entrypoint script
+RUN echo '#!/bin/sh' > /app/docker-entrypoint.sh && \
+    echo 'echo "Initializing database schema..."' >> /app/docker-entrypoint.sh && \
+    echo 'npx prisma db push --accept-data-loss || echo "Warning: db push failed"' >> /app/docker-entrypoint.sh && \
+    echo 'echo "Starting service..."' >> /app/docker-entrypoint.sh && \
+    echo 'exec npm start' >> /app/docker-entrypoint.sh && \
+    chmod +x /app/docker-entrypoint.sh
+
 EXPOSE 4001
-CMD ["npm", "start"]
+CMD ["/app/docker-entrypoint.sh"]

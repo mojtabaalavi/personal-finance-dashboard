@@ -19,12 +19,20 @@ npm run docker:up
 cd app
 .\check-health.ps1
 
-# Seed database with test users (optional)
+# Seed database with sample data (recommended for first-time users)
 .\seed-database.ps1
 
 # Open application
 Start http://localhost:3000
 ```
+
+**What you get after seeding:**
+- 2 test users (admin & regular user)
+- 3 sample bank accounts with 20 transactions
+- 4 sample assets (properties, vehicles) and liabilities
+- Sample AI conversation with financial insights
+
+💡 *The seed script is safe to run multiple times - it won't delete your data!*
 
 ### Option 2: Development Mode (Local)
 
@@ -71,6 +79,139 @@ After running the seed script:
 - Password: `password123`
 
 ⚠️ **Login requires EMAIL ADDRESS, not username**
+
+## 🗄️ Database Setup & Sample Data
+
+### First-Time Setup
+
+The application uses **PostgreSQL with schema isolation** - each microservice has its own database schema for proper data separation:
+
+- `auth` schema - User accounts and authentication
+- `finance` schema - Bank accounts, transactions, categories
+- `property` schema - Assets, liabilities, insurance, rentals
+- `ai` schema - Conversations, messages, insights
+
+**Quick Setup for New Users:**
+
+```powershell
+# 1. Start all services
+cd app
+npm run docker:up
+
+# 2. Wait for services to be healthy (~30 seconds)
+.\check-health.ps1
+
+# 3. Initialize database tables
+.\create-tables.ps1
+
+# 4. Seed all services with sample data
+.\seed-database.ps1
+```
+
+The **seed-database.ps1** script will populate all four services with sample data:
+- ✅ **Auth**: 2 test users (admin and regular user)
+- ✅ **Finance**: 3 bank accounts, 20 transactions, 7 categories
+- ✅ **Property**: 4 assets, 4 liabilities, insurance policies
+- ✅ **AI**: Sample conversation with financial insights
+
+### Safe Reseeding - Your Data is Protected 🛡️
+
+**You can run the seed script multiple times without losing your data!**
+
+All seed scripts use **upsert patterns** (update-or-insert):
+- **Auth service**: Checks if test users exist before creating them
+- **Finance service**: Uses `upsert` for all sample accounts and transactions
+- **Property service**: Sample data has specific IDs (`asset-1-primary-home`, etc.) that won't conflict with your data
+- **AI service**: Sample conversations use placeholder IDs
+
+**What gets created on reseed:**
+- Only **missing sample data** is added
+- Your own transactions, assets, and accounts remain untouched
+- Test users are skipped if they already exist
+
+**Example**: If you've added 50 transactions and 3 properties, running the seed script will:
+- ✅ Keep all your 50 transactions and 3 properties
+- ✅ Add sample data only if it doesn't exist
+- ✅ Skip test users if they're already there
+
+### Manual Service Seeding
+
+If you need to seed individual services:
+
+```powershell
+# Seed individual services
+docker exec pfd_auth npm run seed       # Users only
+docker exec pfd_finance npm run seed    # Banking data only
+docker exec pfd_property npm run seed   # Assets only
+docker exec pfd_ai npm run seed         # AI conversations only
+```
+
+### Database Access & Verification
+
+**Check if data was seeded successfully:**
+
+```powershell
+# Access PostgreSQL
+docker exec -it pfd_postgres psql -U admin pfd_db
+
+# Check users
+\c pfd_db
+SET search_path TO auth;
+SELECT email, role FROM "User";
+
+# Check transactions (should see ~20 sample transactions)
+SET search_path TO finance;
+SELECT COUNT(*) FROM "Transaction";
+
+# Check assets (should see 4 sample assets)
+SET search_path TO property;
+SELECT name, type, value FROM "Asset";
+
+# Exit
+\q
+```
+
+### Troubleshooting Database Issues
+
+**Services can't connect to database:**
+```powershell
+# Check if PostgreSQL is running
+docker ps | Select-String postgres
+
+# View database logs
+docker-compose logs postgres
+
+# Restart database
+docker-compose restart postgres
+```
+
+**Seed script fails:**
+```powershell
+# Ensure all services are running
+docker-compose ps
+
+# Check specific service logs
+docker-compose logs auth-service
+docker-compose logs finance-service
+
+# Try manual seed for specific service
+docker exec pfd_auth npm run seed
+```
+
+**Want to start fresh:**
+```powershell
+# WARNING: This deletes ALL data including your own
+
+# Stop services
+docker-compose down
+
+# Remove database volume
+docker volume rm app_postgres_data
+
+# Start fresh
+docker-compose up -d
+.\seed-database.ps1
+```
 
 ## ✅ System Status
 

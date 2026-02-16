@@ -3,7 +3,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
 import argon2 from 'argon2';
 
-const databaseUrl = process.env.DATABASE_URL || 'postgresql://admin:password123@db:5432/pfd_db';
+const databaseUrl = process.env.DATABASE_URL || 'postgresql://admin:password123@db:5432/pfd_db?schema=auth';
 
 const pool = new Pool({ connectionString: databaseUrl });
 const adapter = new PrismaPg(pool);
