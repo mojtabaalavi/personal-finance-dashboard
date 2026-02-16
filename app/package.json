@@ -6,7 +6,6 @@
   "workspaces": [
     "services/*",
     "gateway",
-    "packages/*",
     "client"
   ],
   "scripts": {
@@ -14,7 +13,18 @@
     "docker:down": "docker-compose down",
     "docker:build": "docker-compose build",
     "docker:logs": "docker-compose logs -f",
-    "dev": "concurrently \"npm run dev:gateway\" \"npm run dev:auth\" \"npm run dev:finance\" \"npm run dev:property\" \"npm run dev:ai\" \"npm run dev:client\" \"npm run dev:reporting\"",
+    "docker:restart": "npm run docker:down && npm run docker:up",
+    "install:all": "npm install",
+    "build:all": "npm run build --workspaces --if-present",
+    "build:gateway": "npm run build --workspace=gateway",
+    "build:auth": "npm run build --workspace=services/auth",
+    "build:finance": "npm run build --workspace=services/finance",
+    "build:property": "npm run build --workspace=services/property",
+    "build:ai": "npm run build --workspace=services/ai",
+    "build:reporting": "npm run build --workspace=services/reporting",
+    "build:client": "npm run build --workspace=client",
+    "dev": "concurrently -n gateway,auth,finance,property,ai,reporting,client \"npm run dev:gateway\" \"npm run dev:auth\" \"npm run dev:finance\" \"npm run dev:property\" \"npm run dev:ai\" \"npm run dev:reporting\" \"npm run dev:client\"",
+    "dev:backend": "concurrently -n gateway,auth,finance,property,ai,reporting \"npm run dev:gateway\" \"npm run dev:auth\" \"npm run dev:finance\" \"npm run dev:property\" \"npm run dev:ai\" \"npm run dev:reporting\"",
     "dev:gateway": "npm run dev --workspace=gateway",
     "dev:auth": "npm run dev --workspace=services/auth",
     "dev:finance": "npm run dev --workspace=services/finance",
@@ -23,17 +33,20 @@
     "dev:reporting": "npm run dev --workspace=services/reporting",
     "dev:client": "npm run dev --workspace=client",
     "test": "vitest",
-    "test:all": "concurrently \"npm run test:auth\" \"npm run test:finance\" \"npm run test:property\" \"npm run test:ai\" \"npm run test:reporting\"",
+    "test:all": "npm test --workspaces --if-present",
     "test:auth": "npm test --workspace=services/auth",
     "test:finance": "npm test --workspace=services/finance",
     "test:property": "npm test --workspace=services/property",
     "test:ai": "npm test --workspace=services/ai",
     "test:reporting": "npm test --workspace=services/reporting",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "lint": "eslint . --ext .ts,.tsx",
     "prepare": "husky"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
+    "@types/node": "^22.10.6",
     "concurrently": "^9.1.1",
     "husky": "^9.1.7",
     "turbo": "^2.3.3"
@@ -41,6 +54,22 @@
   "overrides": {
     "glob": "^11.0.0",
     "graphql": "^16.10.0",
-    "langsmith": "^0.5.4"
+    "langsmith": "^0.5.4",
+    "lodash": "4.17.23",
+    "lodash-amd": "4.17.23",
+    "lodash-es": "4.17.23",
+    "hono": "4.11.7",
+    "prisma": {
+      ".": "^7.4.0",
+      "hono": "4.11.7",
+      "lodash": "4.17.23"
+    },
+    "@prisma/dev": {
+      "hono": "4.11.7",
+      "lodash": "4.17.23"
+    },
+    "chevrotain": {
+      "lodash": "4.17.23"
+    }
   }
 }

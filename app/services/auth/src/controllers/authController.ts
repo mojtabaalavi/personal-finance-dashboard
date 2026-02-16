@@ -182,30 +182,46 @@ export const login = async (req: Request, res: Response) => {
       return res.status(403).json({ error: 'Account is locked. Please contact support.' });
     }
 
-    // Generate and send 2FA code
-    const twoFactorCode = generate2FACode();
-    const twoFactorCodeExpiry = get2FACodeExpiry();
+    // Check if 2FA is enabled
+    if (user.twoFactorEnabled) {
+      // Generate and send 2FA code
+      const twoFactorCode = generate2FACode();
+      const twoFactorCodeExpiry = get2FACodeExpiry();
 
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        twoFactorCode,
-        twoFactorCodeExpiry,
-      },
-    });
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          twoFactorCode,
+          twoFactorCodeExpiry,
+        },
+      });
 
-    try {
-      await emailService.send2FACode(email, twoFactorCode);
-    } catch (emailError) {
-      console.error('Failed to send 2FA code:', emailError);
-      return res.status(500).json({ error: 'Failed to send verification code. Please try again.' });
+      try {
+        await emailService.send2FACode(email, twoFactorCode);
+      } catch (emailError) {
+        console.error('Failed to send 2FA code:', emailError);
+        return res.status(500).json({ error: 'Failed to send verification code. Please try again.' });
+      }
+
+      res.json({
+        message: 'Verification code sent to your email',
+        requires2FA: true,
+        email: user.email,
+      });
+    } else {
+      // 2FA disabled - issue token directly
+      const token = generateToken({ id: user.id, email: user.email, role: user.role });
+
+      res.json({
+        token,
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+        },
+        requires2FA: false,
+      });
     }
-
-    res.json({
-      message: 'Verification code sent to your email',
-      requires2FA: true,
-      email: user.email,
-    });
   } catch (error) {
     res.status(400).json({ error: 'Login failed' });
   }

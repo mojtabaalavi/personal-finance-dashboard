@@ -1,0 +1,28 @@
+{
+  "name": "personal-finance-dashboard-root",
+  "version": "1.0.0",
+  "description": "Root wrapper for Personal Finance Dashboard",
+  "private": true,
+  "scripts": {
+    "docker:up": "npm run docker:up --prefix app",
+    "docker:down": "npm run docker:down --prefix app",
+    "docker:build": "npm run docker:build --prefix app",
+    "docker:logs": "npm run docker:logs --prefix app",
+    "docker:restart": "npm run docker:restart --prefix app",
+    "install": "npm install --prefix app",
+    "install:all": "npm run install:all --prefix app",
+    "build:all": "npm run build:all --prefix app",
+    "dev": "npm run dev --prefix app",
+    "dev:backend": "npm run dev:backend --prefix app",
+    "dev:client": "npm run dev:client --prefix app",
+    "test": "npm run test --prefix app",
+    "test:all": "npm run test:all --prefix app",
+    "test:e2e": "npm run test:e2e --prefix app",
+    "test:e2e:ui": "npm run test:e2e:ui --prefix app",
+    "lint": "npm run lint --prefix app"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

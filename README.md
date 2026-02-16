@@ -4,17 +4,19 @@ A comprehensive, privacy-first personal finance management application built wit
 
 ## 🚀 Quick Start
 
+### Option 1: Using Docker (Recommended)
+
 ```powershell
-# Navigate to app directory
+# From root directory - all commands work from here
+npm run docker:build
+npm run docker:up
+
+# Or from app directory
 cd app
-
-# Build all services
-docker-compose build
-
-# Start all services
-docker-compose up -d
+npm run docker:up
 
 # Check health
+cd app
 .\check-health.ps1
 
 # Seed database with test users (optional)
@@ -23,6 +25,38 @@ docker-compose up -d
 # Open application
 Start http://localhost:3000
 ```
+
+### Option 2: Development Mode (Local)
+
+```powershell
+# From root directory
+npm install
+npm run dev
+
+# Or from app directory
+cd app
+npm install
+npm run dev
+```
+
+### Available Scripts (can be run from root or app directory)
+
+**Docker Commands:**
+- `npm run docker:up` - Start all containers
+- `npm run docker:down` - Stop all containers
+- `npm run docker:build` - Build all images
+- `npm run docker:logs` - View logs
+- `npm run docker:restart` - Restart all containers
+
+**Development:**
+- `npm run dev` - Start all services in dev mode
+- `npm run dev:backend` - Start only backend services
+- `npm run dev:client` - Start only frontend
+
+**Build & Test:**
+- `npm run build:all` - Build all services
+- `npm run test:all` - Run all tests
+- `npm run test:e2e` - Run end-to-end tests
 
 ### Default Test Credentials
 
@@ -42,15 +76,20 @@ After running the seed script:
 
 All services are now running and healthy:
 
-- ✅ **Gateway** (Port 4000) - API routing
-- ✅ **Auth Service** (Port 4001) - User authentication  
-- ✅ **Finance Service** (Port 4002) - Transactions & bank accounts
-- ✅ **Property Service** (Port 4003) - Assets & rentals
-- ✅ **AI Service** (Port 4004) - Intelligent categorization
-- ✅ **Reporting Service** (Port 4005) - Analytics & reports
+- ✅ **Gateway** (Port 4000) - API routing - [Swagger Docs](http://localhost:4000/api-docs)
+- ✅ **Auth Service** (Port 4001) - User authentication - [Swagger Docs](http://localhost:4001/api-docs)
+- ✅ **Finance Service** (Port 4002) - Transactions & bank accounts - [Swagger Docs](http://localhost:4002/api-docs)
+- ✅ **Property Service** (Port 4003) - Assets & rentals - [Swagger Docs](http://localhost:4003/api-docs)
+- ✅ **AI Service** (Port 4004) - Intelligent categorization - [Swagger Docs](http://localhost:4004/api-docs)
+- ✅ **Reporting Service** (Port 4005) - Analytics & reports - [Swagger Docs](http://localhost:4005/api-docs)
+
+**Access Swagger Documentation:**
+- Each service: Visit root URL (e.g., `http://localhost:4001/`) - auto-redirects to `/api-docs`
+- Gateway: `http://localhost:4000/api-docs` - comprehensive API documentation for all services
 - ✅ **Client** (Port 3000) - React web UI
 - ✅ **PostgreSQL** (Port 5432) - Database
 - ✅ **Ollama** (Port 11434) - Local LLM
+- ✅ **MailHog** (Port 8025) - Email testing - [Web UI](http://localhost:8025)
 
 ## 📖 Documentation
 
@@ -158,6 +197,10 @@ docker exec -it pfd_postgres psql -U admin pfd_db
 | Property | 4003 | http://localhost:4003 |
 | AI | 4004 | http://localhost:4004 |
 | Reporting | 4005 | http://localhost:4005 |
+| PostgreSQL | 5432 | localhost:5432 |
+| Ollama | 11434 | http://localhost:11434 |
+| MailHog (Email) | 8025 | http://localhost:8025 |
+| MailHog (SMTP) | 1025 | localhost:1025 |
 
 ### Default Credentials
 
@@ -169,6 +212,47 @@ docker exec -it pfd_postgres psql -U admin pfd_db
 **JWT Secret**: `supersecretkey`
 
 ⚠️ **Change these for production use!**
+
+### Email Testing (MailHog)
+
+All emails sent by the application (verification codes, 2FA codes, password resets) are captured by **MailHog** for local testing:
+
+- **Web Interface**: http://localhost:8025
+- **SMTP Server**: localhost:1025
+
+**How to use:**
+1. Open http://localhost:8025 in your browser
+2. Perform actions that trigger emails (registration, login with 2FA, password reset)
+3. Check MailHog web UI to see all captured emails
+4. No actual emails are sent to real addresses
+
+**Note**: Test users created by the seed script have 2FA disabled by default for easier testing.
+
+### Database Management
+
+**Reseed Test Users** (Delete and recreate test accounts only):
+```powershell
+cd app
+# Delete test users using PowerShell variable
+$sql = 'DELETE FROM \"User\" WHERE email IN (''admin@example.com'', ''user@example.com'');'
+docker exec -i pfd_postgres psql -U admin pfd_db -c $sql
+.\seed-database.ps1
+```
+
+**Complete Database Reset** (⚠️ Deletes ALL data):
+```powershell
+cd app
+docker-compose down -v
+docker-compose up -d
+# Wait for services to start, then seed:
+.\seed-database.ps1
+```
+
+**Data Persistence:**
+- ✅ Data persists across container restarts and rebuilds
+- ✅ `docker-compose down` (without `-v`) keeps all data
+- ✅ `docker-compose build` never affects database
+- ❌ `docker-compose down -v` removes ALL data (volumes deleted)
 
 ## 🚨 Troubleshooting
 

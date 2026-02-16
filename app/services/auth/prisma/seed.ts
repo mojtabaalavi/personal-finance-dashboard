@@ -33,6 +33,8 @@ async function main() {
         passwordHash,
         role: 'ADMIN',
         permissions: ['manage_users', 'manage_parsers', 'view_all_data'],
+        emailVerified: true,
+        twoFactorEnabled: false,
       },
     });
 
@@ -61,6 +63,8 @@ async function main() {
         passwordHash,
         role: 'USER',
         permissions: [],
+        emailVerified: true,
+        twoFactorEnabled: false,
       },
     });
 

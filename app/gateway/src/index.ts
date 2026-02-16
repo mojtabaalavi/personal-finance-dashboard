@@ -9,8 +9,32 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+// Configure CORS with explicit options
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://localhost:4000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
 app.use(express.json());
+
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
+
+// Handle OPTIONS requests explicitly for CORS preflight
+app.options('*', (req, res) => {
+  console.log(`[Gateway] OPTIONS preflight for ${req.url}`);
+  res.status(200).end();
+});
+
+// Root redirect to Swagger docs
+app.get('/', (req, res) => {
+  res.redirect('/api/docs');
+});
 
 // Health Check
 app.get('/health', (req, res) => {
@@ -35,17 +59,57 @@ console.log(`- Property: ${PROPERTY_SERVICE_URL}`);
 console.log(`- AI: ${AI_SERVICE_URL}`);
 console.log(`- Reporting: ${REPORTING_SERVICE_URL}`);
 
-// Routes configuration
-app.use('/api/auth', createProxyMiddleware({ target: AUTH_SERVICE_URL, changeOrigin: true }));
-app.use('/api/finance', createProxyMiddleware({ target: FINANCE_SERVICE_URL, changeOrigin: true }));
-app.use('/api/property', createProxyMiddleware({ target: PROPERTY_SERVICE_URL, changeOrigin: true }));
-app.use('/api/ai', createProxyMiddleware({ target: AI_SERVICE_URL, changeOrigin: true }));
-app.use('/api/reporting', createProxyMiddleware({ target: REPORTING_SERVICE_URL, changeOrigin: true }));
+// Routes configuration - use app.all to handle all HTTP methods
+app.all('/api/auth/*', async (req, res) => {
+  console.log(`[Gateway] *** AUTH ROUTE MATCHED *** Method: ${req.method}, URL: ${req.url}, Path: ${req.path}`);
+  try {
+    const targetUrl = `${AUTH_SERVICE_URL}${req.path}`;
+    console.log(`[Gateway] Forwarding to: ${targetUrl}`);
+    console.log(`[Gateway] Body:`, req.body);
+    
+    const response = await fetch(targetUrl, {
+      method: req.method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(req.headers.authorization && { 'Authorization': req.headers.authorization as string }),
+      },
+      body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined,
+    });
+    
+    const data = await response.json();
+    console.log(`[Gateway] Response status: ${response.status}`);
+    res.status(response.status).json(data);
+  } catch (error: any) {
+    console.error(`[Gateway] ERROR:`, error.message);
+    if (!res.headersSent) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
 
-app.use('/api/users', createProxyMiddleware({
-  target: AUTH_SERVICE_URL,
-  changeOrigin: true
-}));
+app.all('/api/users/*', async (req, res) => {
+  try {
+    const targetUrl = `${AUTH_SERVICE_URL}${req.path}`;
+    console.log(`[Gateway] Forwarding to: ${targetUrl}`);
+    
+    const response = await fetch(targetUrl, {
+      method: req.method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(req.headers.authorization && { 'Authorization': req.headers.authorization as string }),
+      },
+      body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined,
+    });
+    
+    const data = await response.json();
+    res.status(response.status).json(data);
+  } catch (error: any) {
+    console.error(`[Gateway] Error:`, error.message);
+    if (!res.headersSent) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
 
 const PORT = process.env.PORT || 4000;
 
