@@ -88,10 +88,111 @@ app.all('/api/auth/*', async (req, res) => {
   }
 });
 
-app.all('/api/users/*', async (req, res) => {
+// Handle both /api/users and /api/users/* for user management
+app.all(['/api/users', '/api/users/*'], async (req, res) => {
   try {
     // Use req.url to include query parameters
     const targetUrl = `${AUTH_SERVICE_URL}${req.url}`;
+    console.log(`[Gateway] Forwarding to: ${targetUrl}`);
+    
+    const response = await fetch(targetUrl, {
+      method: req.method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(req.headers.authorization && { 'Authorization': req.headers.authorization as string }),
+      },
+      body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined,
+    });
+    
+    const data = await response.json();
+    res.status(response.status).json(data);
+  } catch (error: any) {
+    console.error(`[Gateway] Error:`, error.message);
+    if (!res.headersSent) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+// Finance Service Routes
+app.all(['/api/finance', '/api/finance/*'], async (req, res) => {
+  try {
+    const targetUrl = `${FINANCE_SERVICE_URL}${req.url}`;
+    console.log(`[Gateway] Forwarding to: ${targetUrl}`);
+    
+    const response = await fetch(targetUrl, {
+      method: req.method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(req.headers.authorization && { 'Authorization': req.headers.authorization as string }),
+      },
+      body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined,
+    });
+    
+    const data = await response.json();
+    res.status(response.status).json(data);
+  } catch (error: any) {
+    console.error(`[Gateway] Error:`, error.message);
+    if (!res.headersSent) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+// Property Service Routes
+app.all(['/api/property', '/api/property/*'], async (req, res) => {
+  try {
+    const targetUrl = `${PROPERTY_SERVICE_URL}${req.url}`;
+    console.log(`[Gateway] Forwarding to: ${targetUrl}`);
+    
+    const response = await fetch(targetUrl, {
+      method: req.method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(req.headers.authorization && { 'Authorization': req.headers.authorization as string }),
+      },
+      body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined,
+    });
+    
+    const data = await response.json();
+    res.status(response.status).json(data);
+  } catch (error: any) {
+    console.error(`[Gateway] Error:`, error.message);
+    if (!res.headersSent) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+// AI Service Routes
+app.all(['/api/ai', '/api/ai/*'], async (req, res) => {
+  try {
+    const targetUrl = `${AI_SERVICE_URL}${req.url}`;
+    console.log(`[Gateway] Forwarding to: ${targetUrl}`);
+    
+    const response = await fetch(targetUrl, {
+      method: req.method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(req.headers.authorization && { 'Authorization': req.headers.authorization as string }),
+      },
+      body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined,
+    });
+    
+    const data = await response.json();
+    res.status(response.status).json(data);
+  } catch (error: any) {
+    console.error(`[Gateway] Error:`, error.message);
+    if (!res.headersSent) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+// Reporting Service Routes
+app.all(['/api/reporting', '/api/reporting/*'], async (req, res) => {
+  try {
+    const targetUrl = `${REPORTING_SERVICE_URL}${req.url}`;
     console.log(`[Gateway] Forwarding to: ${targetUrl}`);
     
     const response = await fetch(targetUrl, {
