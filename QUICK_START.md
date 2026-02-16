@@ -38,7 +38,18 @@ This step creates the database structure (20 tables across 4 schemas).
 
 💡 **Why is this needed?** This bypasses Prisma CLI issues in Alpine containers and ensures all tables are created correctly from the Prisma schema definitions.
 
-### 4. Seed Sample Data (Recommended for First-Time Users)
+### 4. Install AI Model (Required for AI Features)
+
+```powershell
+# Pull the Llama 3.2 model for AI chat (one-time setup, ~2GB download)
+docker exec pfd_ollama ollama pull llama3.2
+```
+
+💡 **Why is this needed?** The AI service requires a language model to power chat and intelligent categorization. This downloads the model once and stores it locally.
+
+**Expected time**: 2-5 minutes depending on internet speed
+
+### 5. Seed Sample Data (Recommended for First-Time Users)
 
 ```powershell
 # Populate database with sample data
@@ -50,12 +61,13 @@ This creates:
 - ✅ 3 bank accounts with 20 sample transactions
 - ✅ 4 assets (properties, vehicles) and liabilities
 - ✅ Sample AI conversation with insights
+- ✅ Installs AI model if not already present
 
 💡 **Safe to run multiple times** - uses upsert patterns, won't delete your data!
 
 You can skip this step if you prefer to start with a clean slate and add your own data.
 
-### 5. Verify Health
+### 6. Verify Health
 
 ```powershell
 # Run health check
@@ -64,13 +76,13 @@ You can skip this step if you prefer to start with a clean slate and add your ow
 
 You should see all services as **HEALTHY**.
 
-### 6. Access Application
+### 7. Access Application
 
 Open your browser and navigate to:
 - **Web UI**: http://localhost:3000
 - **API Gateway**: http://localhost:4000
 
-### 7. First Login
+### 8. First Login
 
 **Option A: Use Test Account (if you ran seed script)**
 - Admin: admin@example.com / password123

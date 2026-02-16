@@ -11,6 +11,22 @@ Write-Host "Seeding all services with sample data..." -ForegroundColor Yellow
 Write-Host "Note: This is safe for existing data - only creates missing sample entries" -ForegroundColor Green
 Write-Host ""
 
+# Check and install Ollama model if needed
+Write-Host "[0/5] Checking AI model installation..." -ForegroundColor Cyan
+$ollamaModels = docker exec pfd_ollama ollama list 2>&1
+if ($ollamaModels -notmatch "llama3.2") {
+    Write-Host "  AI model not found. Downloading llama3.2 (~2GB, may take 2-5 minutes)..." -ForegroundColor Yellow
+    docker exec pfd_ollama ollama pull llama3.2
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "  ✅ AI model installed successfully" -ForegroundColor Green
+    } else {
+        Write-Host "  ⚠️  Failed to install AI model. AI features may not work." -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "  ✅ AI model already installed" -ForegroundColor Green
+}
+Write-Host ""
+
 $totalSteps = 4
 $currentStep = 0
 $failedServices = @()

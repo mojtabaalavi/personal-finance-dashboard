@@ -112,7 +112,7 @@ const Login: React.FC = () => {
         onSubmit={showTwoFactor ? handleTwoFactorSubmit : handleLoginSubmit}
       >
         <div className={styles.authHeader}>
-          <h1>MJ Solutionss</h1>
+          <h1>MJ Solutions</h1>
           <p>{showTwoFactor ? 'Enter verification code' : 'Login to your finance dashboard'}</p>
         </div>
 

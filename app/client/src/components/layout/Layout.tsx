@@ -59,7 +59,7 @@ const Layout: React.FC = () => {
     <div className={styles.layout}>
       <aside className={styles.sidebar}>
         <div className={styles.logo}>
-          <h1>MJ Solutionss</h1>
+          <h1>MJ Solutions</h1>
           <p>Finance Hub</p>
         </div>
         

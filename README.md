@@ -15,6 +15,9 @@ npm run docker:up
 cd app
 npm run docker:up
 
+# Install AI model (required for AI features, one-time setup)
+docker exec pfd_ollama ollama pull llama3.2
+
 # Check health
 cd app
 .\check-health.ps1

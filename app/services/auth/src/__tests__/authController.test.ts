@@ -45,9 +45,9 @@ describe('Auth Controller', () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(201);
       expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Registration successful. Please check your email to verify your account.',
+        message: 'Registration successful. You can now log in.',
         email: userData.email,
-        requiresVerification: true,
+        requiresVerification: false,
       });
     });
 
@@ -74,6 +74,7 @@ describe('Auth Controller', () => {
         role: 'USER',
         emailVerified: true,
         isLocked: false,
+        twoFactorEnabled: true,
       };
       prismaMock.user.findFirst.mockResolvedValue(user as any);
       prismaMock.user.update.mockResolvedValue(user as any);

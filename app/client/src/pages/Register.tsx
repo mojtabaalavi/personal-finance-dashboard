@@ -29,6 +29,12 @@ const Register: React.FC = () => {
             state: { message: 'Please verify your email before logging in. Check your inbox for the verification link.' }
           });
         }, 3000);
+      } else {
+        // Auto-verified (dev/test mode) - redirect to login immediately
+        setSuccess('Registration successful! Redirecting to login...');
+        setTimeout(() => {
+          navigate('/login');
+        }, 1500);
       }
     } catch (err: any) {
       setError(err.response?.data?.error || 'Registration failed. Please try again.');
@@ -41,7 +47,7 @@ const Register: React.FC = () => {
     <div className={styles.authPage}>
       <form className={styles.authCard} onSubmit={handleSubmit}>
         <div className={styles.authHeader}>
-          <h1>MJ Solutionss</h1>
+          <h1>MJ Solutions</h1>
           <p>Create your finance account</p>
         </div>
 
