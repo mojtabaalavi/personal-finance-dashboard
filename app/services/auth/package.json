@@ -20,8 +20,9 @@
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "nodemailer": "^6.9.15",
+    "nodemailer": "^8.0.1",
     "pg": "^8.13.1",
+    "swagger-ui-express": "^5.0.1",
     "zod": "^3.24.1"
   },
   "devDependencies": {
@@ -33,6 +34,7 @@
     "@types/nodemailer": "^6.4.16",
     "@types/pg": "^8.11.10",
     "@types/supertest": "^6.0.3",
+    "@types/swagger-ui-express": "^4.1.6",
     "nodemon": "^3.1.9",
     "prisma": "^7.4.0",
     "supertest": "^7.2.2",
@@ -41,5 +43,26 @@
     "vite": "^6.0.7",
     "vitest": "^4.0.18",
     "vitest-mock-extended": "^3.1.0"
+  },
+  "overrides": {
+    "lodash": "4.17.23",
+    "lodash-amd": "4.17.23",
+    "lodash-es": "4.17.23",
+    "hono": "4.11.7",
+    "prisma": {
+      ".": "^7.4.0",
+      "hono": "4.11.7",
+      "lodash": "4.17.23"
+    },
+    "@prisma/dev": {
+      "hono": "4.11.7",
+      "lodash": "4.17.23"
+    },
+    "@mrleebo/prisma-ast": {
+      "lodash": "4.17.23"
+    },
+    "chevrotain": {
+      "lodash": "4.17.23"
+    }
   }
 }

@@ -39,8 +39,11 @@ const Login: React.FC = () => {
       if (response.data.requires2FA) {
         setShowTwoFactor(true);
         setInfo('A verification code has been sent to your email. Please enter it below.');
+      } else if (response.data.token && response.data.user) {
+        // 2FA disabled - login directly
+        login(response.data.user, response.data.token);
+        navigate('/');
       } else {
-        // Unexpected: should always require 2FA
         setError('Unexpected response from server');
       }
     } catch (err: any) {
