@@ -290,6 +290,101 @@ docker-compose restart db
 docker-compose logs db
 ```
 
+### PostgreSQL Database Access
+
+**Connection Details:**
+- Host: `localhost`
+- Port: `5432`
+- Database: `pfd_db`
+- Username: `admin`
+- Password: `password123`
+
+**Using Command Line (psql):**
+```powershell
+# Direct connection via Docker
+docker exec -it pfd_postgres psql -U admin pfd_db
+
+# Common psql commands:
+\dt          # List all tables
+\d "User"    # Describe User table (quotes needed for capitalized names)
+\q           # Exit psql
+```
+
+**Using GUI Tools:**
+
+<details>
+<summary><strong>pgAdmin 4</strong> (Recommended)</summary>
+
+1. Download from https://www.pgadmin.org/download/
+2. Launch pgAdmin
+3. Right-click "Servers" → "Register" → "Server"
+4. **General tab**: Name = "PFD Local"
+5. **Connection tab**:
+   - Hostname: `localhost`
+   - Port: `5432`
+   - Database: `pfd_db`
+   - Username: `admin`
+   - Password: `password123`
+6. Click "Save"
+7. Connection type: **Standard** (not SSL)
+
+</details>
+
+<details>
+<summary><strong>VS Code Extension</strong></summary>
+
+1. Install **PostgreSQL** extension by Chris Kolkman
+2. Click PostgreSQL icon in sidebar
+3. Click "+" to add connection
+4. Select "Standard Connection"
+5. Enter connection details:
+   - Hostname: `localhost`
+   - PostgreSQL user: `admin`
+   - Password: `password123`
+   - Port: `5432`
+   - Database: `pfd_db`
+   - Connection type: **Standard**
+6. Click "Connect"
+
+</details>
+
+### TypeScript Errors After Schema Changes
+
+If you see TypeScript errors about missing properties (e.g., `Property 'emailVerified' does not exist on type 'User'`), the Prisma client needs to be regenerated:
+
+**Symptoms:**
+- Red squiggly lines in VS Code on Prisma model fields
+- TypeScript errors in Problems tab about missing properties
+- Errors mentioning fields like `emailVerified`, `twoFactorEnabled`, etc.
+
+**Solution:**
+```powershell
+# Navigate to the auth service
+cd app/services/auth
+
+# Regenerate Prisma Client
+npx prisma generate
+
+# If errors persist, also run for other services with Prisma:
+cd ../finance
+npx prisma generate
+
+cd ../property
+npx prisma generate
+```
+
+**Why this happens:**
+- The Prisma schema defines the database structure
+- The Prisma Client provides TypeScript types based on the schema
+- After changing the schema, you must run `prisma generate` to update the types
+- This regenerates `src/generated/client` with updated TypeScript definitions
+
+**When to regenerate:**
+- After pulling code with schema changes
+- After modifying any `schema.prisma` file
+- After running database migrations
+- When TypeScript can't find properties that exist in the schema
+
 ## 📦 Project Structure
 
 ```

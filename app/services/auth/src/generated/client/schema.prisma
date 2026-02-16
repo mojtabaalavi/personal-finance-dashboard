@@ -5,7 +5,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum Role {
@@ -15,16 +14,27 @@ enum Role {
 
 model User {
   id           String   @id @default(uuid())
-  email        String
+  email        String   @unique
   passwordHash String
   role         Role     @default(USER)
   isLocked     Boolean  @default(false)
   permissions  String[] // Simple array of permission strings
 
+  // Email verification
+  emailVerified           Boolean   @default(false)
+  emailVerificationToken  String?   @unique
+  emailVerificationExpiry DateTime?
+
+  // Two-Factor Authentication
+  twoFactorEnabled    Boolean   @default(true)
+  twoFactorCode       String?
+  twoFactorCodeExpiry DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([email])
+  @@index([emailVerificationToken])
 }
 
 model UserHistory {

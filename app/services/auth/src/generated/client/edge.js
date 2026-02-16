@@ -19,7 +19,10 @@ const {
   skip,
   Decimal,
   Debug,
-  objectEnumValues,
+  DbNull,
+  JsonNull,
+  AnyNull,
+  NullTypes,
   makeStrictEnum,
   Extensions,
   warnOnce,
@@ -27,7 +30,7 @@ const {
   Public,
   getRuntime,
   createParam,
-} = require('./runtime/edge.js')
+} = require('./runtime/wasm-compiler-edge.js')
 
 
 const Prisma = {}
@@ -36,12 +39,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.19.2
- * Query Engine version: c2990dca591cba766e3b7ef5d9e8a84796e47ab7
+ * Prisma Client JS version: 7.4.0
+ * Query Engine version: ab56fe763f921d033a6c195e7ddeb3e255bdbb57
  */
 Prisma.prismaVersion = {
-  client: "6.19.2",
-  engine: "c2990dca591cba766e3b7ef5d9e8a84796e47ab7"
+  client: "7.4.0",
+  engine: "ab56fe763f921d033a6c195e7ddeb3e255bdbb57"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -69,15 +72,11 @@ Prisma.defineExtension = Extensions.defineExtension
 /**
  * Shorthand utilities for JSON filtering
  */
-Prisma.DbNull = objectEnumValues.instances.DbNull
-Prisma.JsonNull = objectEnumValues.instances.JsonNull
-Prisma.AnyNull = objectEnumValues.instances.AnyNull
+Prisma.DbNull = DbNull
+Prisma.JsonNull = JsonNull
+Prisma.AnyNull = AnyNull
 
-Prisma.NullTypes = {
-  DbNull: objectEnumValues.classes.DbNull,
-  JsonNull: objectEnumValues.classes.JsonNull,
-  AnyNull: objectEnumValues.classes.AnyNull
-}
+Prisma.NullTypes = NullTypes
 
 
 
@@ -100,6 +99,12 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role',
   isLocked: 'isLocked',
   permissions: 'permissions',
+  emailVerified: 'emailVerified',
+  emailVerificationToken: 'emailVerificationToken',
+  emailVerificationExpiry: 'emailVerificationExpiry',
+  twoFactorEnabled: 'twoFactorEnabled',
+  twoFactorCode: 'twoFactorCode',
+  twoFactorCodeExpiry: 'twoFactorCodeExpiry',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -141,72 +146,32 @@ exports.Prisma.ModelName = {
  * Create the Client
  */
 const config = {
-  "generator": {
-    "name": "client",
-    "provider": {
-      "fromEnvVar": null,
-      "value": "prisma-client-js"
-    },
-    "output": {
-      "value": "D:\\Personal\\personal-finance-dashboard\\app\\services\\auth\\src\\generated\\client",
-      "fromEnvVar": null
-    },
-    "config": {
-      "engineType": "library"
-    },
-    "binaryTargets": [
-      {
-        "fromEnvVar": null,
-        "value": "windows",
-        "native": true
-      }
-    ],
-    "previewFeatures": [],
-    "sourceFilePath": "D:\\Personal\\personal-finance-dashboard\\app\\services\\auth\\prisma\\schema.prisma",
-    "isCustomOutput": true
-  },
-  "relativeEnvPaths": {
-    "rootEnvPath": "../../../.env",
-    "schemaEnvPath": "../../../.env"
-  },
-  "relativePath": "../../../prisma",
-  "clientVersion": "6.19.2",
-  "engineVersion": "c2990dca591cba766e3b7ef5d9e8a84796e47ab7",
-  "datasourceNames": [
-    "db"
-  ],
+  "previewFeatures": [],
+  "clientVersion": "7.4.0",
+  "engineVersion": "ab56fe763f921d033a6c195e7ddeb3e255bdbb57",
   "activeProvider": "postgresql",
-  "postinstall": false,
-  "inlineDatasources": {
-    "db": {
-      "url": {
-        "fromEnvVar": "DATABASE_URL",
-        "value": null
-      }
-    }
-  },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/client\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum Role {\n  USER\n  ADMIN\n}\n\nmodel User {\n  id           String   @id @default(uuid())\n  email        String\n  passwordHash String\n  role         Role     @default(USER)\n  isLocked     Boolean  @default(false)\n  permissions  String[] // Simple array of permission strings\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([email])\n}\n\nmodel UserHistory {\n  id          String   @id @default(uuid())\n  userId      String\n  email       String\n  role        Role\n  permissions String[]\n  changedAt   DateTime @default(now())\n  changedBy   String? // ID of admin who changed it\n}\n",
-  "inlineSchemaHash": "163b56026928c1b4b0bbaeaab6e1060514b499fcd799061910afbdc63abf8bc1",
-  "copyEngine": true
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/client\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nenum Role {\n  USER\n  ADMIN\n}\n\nmodel User {\n  id           String   @id @default(uuid())\n  email        String   @unique\n  passwordHash String\n  role         Role     @default(USER)\n  isLocked     Boolean  @default(false)\n  permissions  String[] // Simple array of permission strings\n\n  // Email verification\n  emailVerified           Boolean   @default(false)\n  emailVerificationToken  String?   @unique\n  emailVerificationExpiry DateTime?\n\n  // Two-Factor Authentication\n  twoFactorEnabled    Boolean   @default(true)\n  twoFactorCode       String?\n  twoFactorCodeExpiry DateTime?\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  @@index([email])\n  @@index([emailVerificationToken])\n}\n\nmodel UserHistory {\n  id          String   @id @default(uuid())\n  userId      String\n  email       String\n  role        Role\n  permissions String[]\n  changedAt   DateTime @default(now())\n  changedBy   String? // ID of admin who changed it\n}\n"
 }
-config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"dbName\":null,\"schema\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"uuid\",\"args\":[4]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"email\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"passwordHash\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"role\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Role\",\"nativeType\":null,\"default\":\"USER\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"isLocked\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Boolean\",\"nativeType\":null,\"default\":false,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"permissions\",\"kind\":\"scalar\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":true}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"UserHistory\":{\"dbName\":null,\"schema\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"uuid\",\"args\":[4]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"userId\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"email\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"role\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Role\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"permissions\",\"kind\":\"scalar\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"changedAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"changedBy\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false}},\"enums\":{\"Role\":{\"values\":[{\"name\":\"USER\",\"dbName\":null},{\"name\":\"ADMIN\",\"dbName\":null}],\"dbName\":null}},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"passwordHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"isLocked\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"permissions\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"emailVerificationToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerificationExpiry\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"twoFactorEnabled\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"twoFactorCode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"twoFactorCodeExpiry\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"UserHistory\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"permissions\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"changedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"changedBy\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
-config.engineWasm = undefined
-config.compilerWasm = undefined
-
-config.injectableEdgeEnv = () => ({
-  parsed: {
-    DATABASE_URL: typeof globalThis !== 'undefined' && globalThis['DATABASE_URL'] || typeof process !== 'undefined' && process.env && process.env.DATABASE_URL || undefined
-  }
-})
-
-if (typeof globalThis !== 'undefined' && globalThis['DEBUG'] || typeof process !== 'undefined' && process.env && process.env.DEBUG || undefined) {
-  Debug.enable(typeof globalThis !== 'undefined' && globalThis['DEBUG'] || typeof process !== 'undefined' && process.env && process.env.DEBUG || undefined)
+config.parameterizationSchema = {
+  strings: JSON.parse("[\"where\",\"User.findUnique\",\"User.findUniqueOrThrow\",\"orderBy\",\"cursor\",\"User.findFirst\",\"User.findFirstOrThrow\",\"User.findMany\",\"data\",\"User.createOne\",\"User.createMany\",\"User.createManyAndReturn\",\"User.updateOne\",\"User.updateMany\",\"User.updateManyAndReturn\",\"create\",\"update\",\"User.upsertOne\",\"User.deleteOne\",\"User.deleteMany\",\"having\",\"_count\",\"_min\",\"_max\",\"User.groupBy\",\"User.aggregate\",\"UserHistory.findUnique\",\"UserHistory.findUniqueOrThrow\",\"UserHistory.findFirst\",\"UserHistory.findFirstOrThrow\",\"UserHistory.findMany\",\"UserHistory.createOne\",\"UserHistory.createMany\",\"UserHistory.createManyAndReturn\",\"UserHistory.updateOne\",\"UserHistory.updateMany\",\"UserHistory.updateManyAndReturn\",\"UserHistory.upsertOne\",\"UserHistory.deleteOne\",\"UserHistory.deleteMany\",\"UserHistory.groupBy\",\"UserHistory.aggregate\",\"AND\",\"OR\",\"NOT\",\"id\",\"userId\",\"email\",\"Role\",\"role\",\"permissions\",\"changedAt\",\"changedBy\",\"equals\",\"in\",\"notIn\",\"lt\",\"lte\",\"gt\",\"gte\",\"contains\",\"startsWith\",\"endsWith\",\"not\",\"has\",\"hasEvery\",\"hasSome\",\"passwordHash\",\"isLocked\",\"emailVerified\",\"emailVerificationToken\",\"emailVerificationExpiry\",\"twoFactorEnabled\",\"twoFactorCode\",\"twoFactorCodeExpiry\",\"createdAt\",\"updatedAt\",\"set\",\"push\"]"),
+  graph: "YhEgESoAAE8AMCsAAAQAECwAAE8AMC0BAAAAAS8BAAAAATEAAEUxIjIAADYAIEMBAEQAIUQgAFAAIUUgAFAAIUYBAAAAAUdAAFEAIUggAFAAIUkBAEcAIUpAAFEAIUtAAEYAIUxAAEYAIQEAAAABACABAAAAAQAgESoAAE8AMCsAAAQAECwAAE8AMC0BAEQAIS8BAEQAITEAAEUxIjIAADYAIEMBAEQAIUQgAFAAIUUgAFAAIUYBAEcAIUdAAFEAIUggAFAAIUkBAEcAIUpAAFEAIUtAAEYAIUxAAEYAIQRGAABSACBHAABSACBJAABSACBKAABSACADAAAABAAgAwAABQAwBAAAAQAgAwAAAAQAIAMAAAUAMAQAAAEAIAMAAAAEACADAAAFADAEAAABACAOLQEAAAABLwEAAAABMQAAADECMgAAYgAgQwEAAAABRCAAAAABRSAAAAABRgEAAAABR0AAAAABSCAAAAABSQEAAAABSkAAAAABS0AAAAABTEAAAAABAQgAAAkAIA4tAQAAAAEvAQAAAAExAAAAMQIyAABiACBDAQAAAAFEIAAAAAFFIAAAAAFGAQAAAAFHQAAAAAFIIAAAAAFJAQAAAAFKQAAAAAFLQAAAAAFMQAAAAAEBCAAACwAwAQgAAAsAMA4tAQBWACEvAQBWACExAABXMSIyAABgACBDAQBWACFEIABfACFFIABfACFGAQBaACFHQABhACFIIABfACFJAQBaACFKQABhACFLQABZACFMQABZACECAAAAAQAgCAAADgAgDi0BAFYAIS8BAFYAITEAAFcxIjIAAGAAIEMBAFYAIUQgAF8AIUUgAF8AIUYBAFoAIUdAAGEAIUggAF8AIUkBAFoAIUpAAGEAIUtAAFkAIUxAAFkAIQIAAAAEACAIAAAQACACAAAABAAgCAAAEAAgAwAAAAEAIA8AAAkAIBAAAA4AIAEAAAABACABAAAABAAgBxUAAFwAIBYAAF4AIBcAAF0AIEYAAFIAIEcAAFIAIEkAAFIAIEoAAFIAIBEqAABIADArAAAXABAsAABIADAtAQA0ACEvAQA0ACExAAA1MSIyAAA2ACBDAQA0ACFEIABJACFFIABJACFGAQA4ACFHQABKACFIIABJACFJAQA4ACFKQABKACFLQAA3ACFMQAA3ACEDAAAABAAgAwAAFgAwFAAAFwAgAwAAAAQAIAMAAAUAMAQAAAEAIAoqAABDADArAAAdABAsAABDADAtAQAAAAEuAQBEACEvAQBEACExAABFMSIyAAA2ACAzQABGACE0AQBHACEBAAAAGgAgAQAAABoAIAoqAABDADArAAAdABAsAABDADAtAQBEACEuAQBEACEvAQBEACExAABFMSIyAAA2ACAzQABGACE0AQBHACEBNAAAUgAgAwAAAB0AIAMAAB4AMAQAABoAIAMAAAAdACADAAAeADAEAAAaACADAAAAHQAgAwAAHgAwBAAAGgAgBy0BAAAAAS4BAAAAAS8BAAAAATEAAAAxAjIAAFsAIDNAAAAAATQBAAAAAQEIAAAiACAHLQEAAAABLgEAAAABLwEAAAABMQAAADECMgAAWwAgM0AAAAABNAEAAAABAQgAACQAMAEIAAAkADAHLQEAVgAhLgEAVgAhLwEAVgAhMQAAVzEiMgAAWAAgM0AAWQAhNAEAWgAhAgAAABoAIAgAACcAIActAQBWACEuAQBWACEvAQBWACExAABXMSIyAABYACAzQABZACE0AQBaACECAAAAHQAgCAAAKQAgAgAAAB0AIAgAACkAIAMAAAAaACAPAAAiACAQAAAnACABAAAAGgAgAQAAAB0AIAQVAABTACAWAABVACAXAABUACA0AABSACAKKgAAMwAwKwAAMAAQLAAAMwAwLQEANAAhLgEANAAhLwEANAAhMQAANTEiMgAANgAgM0AANwAhNAEAOAAhAwAAAB0AIAMAAC8AMBQAADAAIAMAAAAdACADAAAeADAEAAAaACAKKgAAMwAwKwAAMAAQLAAAMwAwLQEANAAhLgEANAAhLwEANAAhMQAANTEiMgAANgAgM0AANwAhNAEAOAAhDhUAAD0AIBYAAEIAIBcAAEIAIDUBAAAAATYBAAAABDcBAAAABDgBAAAAATkBAAAAAToBAAAAATsBAAAAATwBAAAAAT0BAAAAAT4BAAAAAT8BAEEAIQcVAAA9ACAWAABAACAXAABAACA1AAAAMQI2AAAAMQg3AAAAMQg_AAA_MSIENQEAAAAFQAEAAAABQQEAAAAEQgEAAAAECxUAAD0AIBYAAD4AIBcAAD4AIDVAAAAAATZAAAAABDdAAAAABDhAAAAAATlAAAAAATpAAAAAATtAAAAAAT9AADwAIQ4VAAA6ACAWAAA7ACAXAAA7ACA1AQAAAAE2AQAAAAU3AQAAAAU4AQAAAAE5AQAAAAE6AQAAAAE7AQAAAAE8AQAAAAE9AQAAAAE-AQAAAAE_AQA5ACEOFQAAOgAgFgAAOwAgFwAAOwAgNQEAAAABNgEAAAAFNwEAAAAFOAEAAAABOQEAAAABOgEAAAABOwEAAAABPAEAAAABPQEAAAABPgEAAAABPwEAOQAhCDUCAAAAATYCAAAABTcCAAAABTgCAAAAATkCAAAAAToCAAAAATsCAAAAAT8CADoAIQs1AQAAAAE2AQAAAAU3AQAAAAU4AQAAAAE5AQAAAAE6AQAAAAE7AQAAAAE8AQAAAAE9AQAAAAE-AQAAAAE_AQA7ACELFQAAPQAgFgAAPgAgFwAAPgAgNUAAAAABNkAAAAAEN0AAAAAEOEAAAAABOUAAAAABOkAAAAABO0AAAAABP0AAPAAhCDUCAAAAATYCAAAABDcCAAAABDgCAAAAATkCAAAAAToCAAAAATsCAAAAAT8CAD0AIQg1QAAAAAE2QAAAAAQ3QAAAAAQ4QAAAAAE5QAAAAAE6QAAAAAE7QAAAAAE_QAA-ACEHFQAAPQAgFgAAQAAgFwAAQAAgNQAAADECNgAAADEINwAAADEIPwAAPzEiBDUAAAAxAjYAAAAxCDcAAAAxCD8AAEAxIg4VAAA9ACAWAABCACAXAABCACA1AQAAAAE2AQAAAAQ3AQAAAAQ4AQAAAAE5AQAAAAE6AQAAAAE7AQAAAAE8AQAAAAE9AQAAAAE-AQAAAAE_AQBBACELNQEAAAABNgEAAAAENwEAAAAEOAEAAAABOQEAAAABOgEAAAABOwEAAAABPAEAAAABPQEAAAABPgEAAAABPwEAQgAhCioAAEMAMCsAAB0AECwAAEMAMC0BAEQAIS4BAEQAIS8BAEQAITEAAEUxIjIAADYAIDNAAEYAITQBAEcAIQs1AQAAAAE2AQAAAAQ3AQAAAAQ4AQAAAAE5AQAAAAE6AQAAAAE7AQAAAAE8AQAAAAE9AQAAAAE-AQAAAAE_AQBCACEENQAAADECNgAAADEINwAAADEIPwAAQDEiCDVAAAAAATZAAAAABDdAAAAABDhAAAAAATlAAAAAATpAAAAAATtAAAAAAT9AAD4AIQs1AQAAAAE2AQAAAAU3AQAAAAU4AQAAAAE5AQAAAAE6AQAAAAE7AQAAAAE8AQAAAAE9AQAAAAE-AQAAAAE_AQA7ACERKgAASAAwKwAAFwAQLAAASAAwLQEANAAhLwEANAAhMQAANTEiMgAANgAgQwEANAAhRCAASQAhRSAASQAhRgEAOAAhR0AASgAhSCAASQAhSQEAOAAhSkAASgAhS0AANwAhTEAANwAhBRUAAD0AIBYAAE4AIBcAAE4AIDUgAAAAAT8gAE0AIQsVAAA6ACAWAABMACAXAABMACA1QAAAAAE2QAAAAAU3QAAAAAU4QAAAAAE5QAAAAAE6QAAAAAE7QAAAAAE_QABLACELFQAAOgAgFgAATAAgFwAATAAgNUAAAAABNkAAAAAFN0AAAAAFOEAAAAABOUAAAAABOkAAAAABO0AAAAABP0AASwAhCDVAAAAAATZAAAAABTdAAAAABThAAAAAATlAAAAAATpAAAAAATtAAAAAAT9AAEwAIQUVAAA9ACAWAABOACAXAABOACA1IAAAAAE_IABNACECNSAAAAABPyAATgAhESoAAE8AMCsAAAQAECwAAE8AMC0BAEQAIS8BAEQAITEAAEUxIjIAADYAIEMBAEQAIUQgAFAAIUUgAFAAIUYBAEcAIUdAAFEAIUggAFAAIUkBAEcAIUpAAFEAIUtAAEYAIUxAAEYAIQI1IAAAAAE_IABOACEINUAAAAABNkAAAAAFN0AAAAAFOEAAAAABOUAAAAABOkAAAAABO0AAAAABP0AATAAhAAAAAAFNAQAAAAEBTQAAADECAk0BAAAABE4BAAAABQFNQAAAAAEBTQEAAAABAU0BAAAABAAAAAFNIAAAAAECTQEAAAAETgEAAAAFAU1AAAAAAQFNAQAAAAQAAAAAAxUABhYABxcACAAAAAMVAAYWAAcXAAgAAAADFQAOFgAPFwAQAAAAAxUADhYADxcAEAECAQIDAQUGAQYHAQcIAQkKAQoMAgsNAwwPAQ0RAg4SBBETARIUARMVAhgYBRkZCRobChscChwfCh0gCh4hCh8jCiAlAiEmCyIoCiMqAiQrDCUsCiYtCicuAigxDSkyEQ"
+}
+config.compilerWasm = {
+  getRuntime: async () => require('./query_compiler_fast_bg.js'),
+  getQueryCompilerWasmModule: async () => {
+    const loader = (await import('#wasm-compiler-loader')).default
+    const compiler = (await loader).default
+    return compiler
+  },
+  importName: './query_compiler_fast_bg.js',
+}
+if (typeof globalThis !== 'undefined' && globalThis['DEBUG'] || (typeof process !== 'undefined' && process.env && process.env.DEBUG) || undefined) {
+  Debug.enable(typeof globalThis !== 'undefined' && globalThis['DEBUG'] || (typeof process !== 'undefined' && process.env && process.env.DEBUG) || undefined)
 }
 
 const PrismaClient = getPrismaClient(config)
 exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
-
